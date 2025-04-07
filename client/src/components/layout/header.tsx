@@ -76,7 +76,7 @@ export default function Header() {
           {/* Points display for authenticated users */}
           {isAuthenticated && !pointsLoading && (
             <div className="hidden md:flex items-center">
-              <Badge className="bg-green-600 hover:bg-green-700 flex items-center gap-1 text-white">
+              <Badge className="bg-primary hover:bg-primary/90 flex items-center gap-1 text-black dark:text-black">
                 <Trophy className="h-3 w-3" />
                 <span>{userPoints}/{totalPoints || 0} Points</span>
               </Badge>
@@ -109,7 +109,7 @@ export default function Header() {
           {/* Mobile points display */}
           {isAuthenticated && !pointsLoading && (
             <div className="md:hidden flex items-center">
-              <Badge className="bg-green-600 hover:bg-green-700 flex items-center gap-1 text-white">
+              <Badge className="bg-primary hover:bg-primary/90 flex items-center gap-1 text-black dark:text-black">
                 <Trophy className="h-3 w-3" />
                 <span>{userPoints}</span>
               </Badge>
@@ -146,7 +146,7 @@ export default function Header() {
               </DropdownMenu>
             </>
           ) : (
-            <Button onClick={handleLogin} className="gap-2">
+            <Button onClick={handleLogin} className="gap-2 bg-primary hover:bg-primary/90 text-black dark:text-black">
               <LogIn className="h-4 w-4" />
               <span>Login</span>
             </Button>
