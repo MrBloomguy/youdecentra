@@ -130,7 +130,12 @@ export default function Profile() {
               <div className="ml-24">
                 <div className="flex flex-col md:flex-row md:items-center gap-2">
                   <div className="flex items-center gap-2">
-                    <h1 className="text-xl font-bold">{displayName}</h1>
+                    <h1 className="text-xl font-bold">
+                      {profile?.details?.profile?.username || 
+                       (userId.startsWith('0x') ? formatAddress(userId) : 
+                        userId.includes('@') ? userId : 
+                        formatAddress(userId.split(':').pop() || ''))}
+                    </h1>
                     {!pointsLoading && userPoints > 0 && (
                       <Badge className="bg-green-600 hover:bg-green-700 flex items-center gap-1 text-white">
                         <Trophy className="h-3 w-3" />
