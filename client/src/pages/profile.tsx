@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { useRoute, Link } from 'wouter';
+import { useToast } from "@/hooks/use-toast";
 import Navbar from '@/components/layout/navbar';
 import { useToast } from "@/hooks/use-toast";
 import MobileNav from '@/components/layout/mobile-nav';
@@ -19,6 +20,7 @@ export default function Profile() {
   const [, params] = useRoute<{ id: string }>('/user/:id');
   const userId = params?.id || '';
   const { getUserPosts, getProfile } = useOrbis();
+  const { toast } = useToast();
   const { toast } = useToast();
   const { user: currentUser } = useAuthStore();
   const { points: userPoints, loading: pointsLoading } = useUserPoints(userId);
@@ -53,12 +55,7 @@ export default function Profile() {
         setProfile(profileData);
       } catch (error) {
         console.error('Error fetching profile:', error);
-        import { useToast } from "@/hooks/use-toast";
-
-// Add this at the start of your Profile component:
-const { toast } = useToast();
-
-toast({
+        toast({
           title: "Error loading profile",
           description: "Failed to load profile data. Using cached data if available.",
           variant: "destructive",
