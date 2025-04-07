@@ -36,14 +36,7 @@ export default function InfoSidebar() {
               </Link>
             ))}
           </div>
-          <div className="mt-4">
-            <Button 
-              onClick={() => setCreatePostModalOpen(true)}
-              className="w-full bg-reddit-orange hover:bg-orange-600 text-white font-semibold py-1.5 px-4 rounded-full text-sm mb-2"
-            >
-              Create Post
-            </Button>
-          </div>
+          
         </div>
       </div>
 
