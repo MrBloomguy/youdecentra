@@ -143,21 +143,23 @@ export default function Profile() {
                     {!rankLoading && userRank > 0 && (
                       <Badge className="bg-purple-600 hover:bg-purple-700 flex items-center gap-1 text-white">
                         <Medal className="h-3 w-3" />
-                        <span>Rank #{userRank}</span>
+                        <span>#{userRank}</span>
                       </Badge>
                     )}
 
-                    {!donationLoading && donationPoints > 0 && (
+                    {!donationLoading && (
                       <Badge className="bg-blue-600 hover:bg-blue-700 flex items-center gap-1 text-white">
                         <Gift className="h-3 w-3" />
-                        <span>{donationPoints} Donated</span>
+                        <span>{donationPoints || 0}</span>
                       </Badge>
                     )}
                   </div>
                 </div>
-                <p className="text-sm text-gray-500 dark:text-gray-400">
-                  {formatAddress(userId)}
-                </p>
+                {!profile?.details?.profile?.username && (
+                  <p className="text-sm text-gray-500 dark:text-gray-400">
+                    {formatAddress(userId)}
+                  </p>
+                )}
 
                 {profile?.details?.profile?.description && (
                   <p className="text-sm mt-2">
