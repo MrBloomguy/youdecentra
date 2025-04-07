@@ -61,8 +61,22 @@ class WebSocketClient {
       
       console.log(`Attempting WebSocket connection to: ${wsUrl}`);
       
-      // Create new WebSocket without any query parameters for simplicity
-      this.socket = new WebSocket(wsUrl);
+      try {
+        // Create new WebSocket without any query parameters for simplicity
+        this.socket = new WebSocket(wsUrl);
+        console.log('WebSocket created successfully');
+      } catch (error) {
+        console.error('Error creating WebSocket:', error);
+        // Fall back to relative path if needed
+        try {
+          const fallbackUrl = '/ws';
+          console.log(`Trying fallback WebSocket connection to: ${fallbackUrl}`);
+          this.socket = new WebSocket(fallbackUrl);
+        } catch (fallbackError) {
+          console.error('Fallback WebSocket connection failed:', fallbackError);
+          throw fallbackError;
+        }
+      }
       
       console.log('WebSocket object created, waiting for connection...');
 

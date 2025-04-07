@@ -2,6 +2,8 @@ import React, { useState } from 'react';
 import { useAuthStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import MobileNav from '@/components/layout/mobile-nav';
+import { Link } from 'wouter';
 
 export default function Messages() {
   const { isAuthenticated, user } = useAuthStore();
@@ -18,25 +20,44 @@ export default function Messages() {
   
   if (!isAuthenticated) {
     return (
-      <div className="container mx-auto px-4 py-6 pb-20 md:pb-6">
-        <div className="bg-reddit-light-brighter dark:bg-reddit-dark-brighter rounded-md p-6 border border-reddit-light-border dark:border-reddit-dark-border text-center">
-          <h1 className="text-2xl font-bold mb-4">Messages</h1>
-          <p className="mb-6 text-gray-600 dark:text-gray-300">Please sign in to view your messages.</p>
-          <Button className="bg-reddit-orange hover:bg-orange-600 text-white">Sign In</Button>
+      <>
+        <div className="container mx-auto px-4 py-6 pb-20 md:pb-6">
+          <div className="flex items-center mb-4">
+            <Link href="/" className="mr-2 md:hidden">
+              <button className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+                <i className="ri-arrow-left-line text-xl"></i>
+              </button>
+            </Link>
+            <h1 className="text-2xl font-bold">Messages</h1>
+          </div>
+          <div className="bg-reddit-light-brighter dark:bg-reddit-dark-brighter rounded-md p-6 border border-reddit-light-border dark:border-reddit-dark-border text-center">
+            <p className="mb-6 text-gray-600 dark:text-gray-300">Please sign in to view your messages.</p>
+            <Button className="bg-reddit-orange hover:bg-orange-600 text-white">Sign In</Button>
+          </div>
         </div>
-      </div>
+        <MobileNav />
+      </>
     );
   }
   
   return (
-    <div className="container mx-auto px-4 py-6 pb-20 md:pb-6">
-      <div className="bg-reddit-light-brighter dark:bg-reddit-dark-brighter rounded-md border border-reddit-light-border dark:border-reddit-dark-border overflow-hidden">
-        <div className="flex h-[calc(100vh-220px)] md:h-[600px]">
-          {/* Conversations sidebar */}
-          <div className="w-full md:w-1/3 border-r border-reddit-light-border dark:border-reddit-dark-border">
-            <div className="p-4 border-b border-reddit-light-border dark:border-reddit-dark-border">
-              <h2 className="font-bold text-lg">Messages</h2>
-            </div>
+    <>
+      <div className="container mx-auto px-4 py-6 pb-20 md:pb-6">
+        <div className="flex items-center mb-4">
+          <Link href="/" className="mr-2 md:hidden">
+            <button className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
+              <i className="ri-arrow-left-line text-xl"></i>
+            </button>
+          </Link>
+          <h1 className="text-2xl font-bold">Messages</h1>
+        </div>
+        <div className="bg-reddit-light-brighter dark:bg-reddit-dark-brighter rounded-md border border-reddit-light-border dark:border-reddit-dark-border overflow-hidden">
+          <div className="flex h-[calc(100vh-220px)] md:h-[600px]">
+            {/* Conversations sidebar */}
+            <div className="w-full md:w-1/3 border-r border-reddit-light-border dark:border-reddit-dark-border">
+              <div className="p-4 border-b border-reddit-light-border dark:border-reddit-dark-border">
+                <h2 className="font-bold text-lg">Conversations</h2>
+              </div>
             <div className="overflow-y-auto h-[calc(100%-61px)]">
               {conversations.map((convo) => (
                 <div 
@@ -199,5 +220,7 @@ export default function Messages() {
         </div>
       </div>
     </div>
+    <MobileNav />
+    </>
   );
 }
