@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useRoute, Link } from 'wouter';
 import Navbar from '@/components/layout/navbar';
+import { useToast } from "@/hooks/use-toast";
 import MobileNav from '@/components/layout/mobile-nav';
 import PostCard from '@/components/home/post-card';
 import { Button } from '@/components/ui/button';
@@ -18,6 +19,7 @@ export default function Profile() {
   const [, params] = useRoute<{ id: string }>('/user/:id');
   const userId = params?.id || '';
   const { getUserPosts, getProfile } = useOrbis();
+  const { toast } = useToast();
   const { user: currentUser } = useAuthStore();
   const { points: userPoints, loading: pointsLoading } = useUserPoints(userId);
   const { points: donationPoints, loading: donationLoading } = useUserDonationPoints(userId);
