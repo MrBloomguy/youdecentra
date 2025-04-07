@@ -1,17 +1,27 @@
 import React from 'react';
 import { Link, useLocation } from 'wouter';
-import { useUIStore } from '@/lib/store';
+import { useUIStore, useAuthStore } from '@/lib/store';
+import { usePrivy } from '@privy-io/react-auth';
 
 export default function MobileNav() {
   const [location] = useLocation();
-  const { setCreatePostModalOpen } = useUIStore();
+  const { setCreatePostModalOpen, setAuthModalOpen } = useUIStore();
+  const { isAuthenticated } = useAuthStore();
+  const { user } = usePrivy();
+  
+  const handleProfileClick = () => {
+    if (!isAuthenticated) {
+      setAuthModalOpen(true);
+      return;
+    }
+  };
   
   return (
     <nav className="md:hidden fixed bottom-0 left-0 right-0 bg-reddit-light-brighter dark:bg-reddit-dark-brighter border-t border-reddit-light-border dark:border-reddit-dark-border z-50">
-      <div className="flex justify-around items-center h-12">
+      <div className="flex justify-around items-center h-14">
         <Link href="/" className="flex flex-col items-center justify-center py-1">
           <i className={`ri-home-4-${location === '/' ? 'fill' : 'line'} text-xl ${location === '/' ? 'text-reddit-orange' : ''}`}></i>
-          <span className="text-xs">Home</span>
+          <span className="text-xs">Explore</span>
         </Link>
         
         <Link href="/discover" className="flex flex-col items-center justify-center py-1">
@@ -19,23 +29,30 @@ export default function MobileNav() {
           <span className="text-xs">Discover</span>
         </Link>
         
-        <button 
-          onClick={() => setCreatePostModalOpen(true)}
-          className="flex flex-col items-center justify-center py-1"
-        >
-          <i className="ri-add-circle-line text-xl text-reddit-orange"></i>
-          <span className="text-xs">Create</span>
-        </button>
-        
-        <Link href="/chat" className="flex flex-col items-center justify-center py-1">
-          <i className={`ri-chat-3-${location === '/chat' ? 'fill' : 'line'} text-xl ${location === '/chat' ? 'text-reddit-orange' : ''}`}></i>
-          <span className="text-xs">Chat</span>
+        <Link href="/leaderboard" className="flex flex-col items-center justify-center py-1">
+          <i className={`ri-bar-chart-${location === '/leaderboard' ? 'fill' : 'line'} text-xl ${location === '/leaderboard' ? 'text-reddit-orange' : ''}`}></i>
+          <span className="text-xs">Leaderboard</span>
         </Link>
         
-        <Link href="/notifications" className="flex flex-col items-center justify-center py-1">
-          <i className={`ri-notification-3-${location === '/notifications' ? 'fill' : 'line'} text-xl ${location === '/notifications' ? 'text-reddit-orange' : ''}`}></i>
-          <span className="text-xs">Alerts</span>
+        <Link href="/messages" className="flex flex-col items-center justify-center py-1">
+          <i className={`ri-message-3-${location === '/messages' ? 'fill' : 'line'} text-xl ${location === '/messages' ? 'text-reddit-orange' : ''}`}></i>
+          <span className="text-xs">Messages</span>
         </Link>
+        
+        {isAuthenticated && user ? (
+          <Link href={`/user/${user.id}`} className="flex flex-col items-center justify-center py-1">
+            <i className={`ri-user-${location.startsWith('/user/') ? 'fill' : 'line'} text-xl ${location.startsWith('/user/') ? 'text-reddit-orange' : ''}`}></i>
+            <span className="text-xs">Profile</span>
+          </Link>
+        ) : (
+          <button 
+            onClick={handleProfileClick}
+            className="flex flex-col items-center justify-center py-1"
+          >
+            <i className="ri-user-line text-xl"></i>
+            <span className="text-xs">Profile</span>
+          </button>
+        )}
       </div>
     </nav>
   );

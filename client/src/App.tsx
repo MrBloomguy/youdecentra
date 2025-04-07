@@ -5,6 +5,8 @@ import Home from "@/pages/home";
 import Community from "@/pages/community";
 import PostDetail from "@/pages/post-detail";
 import Profile from "@/pages/profile";
+import Leaderboard from "@/pages/leaderboard";
+import Messages from "@/pages/messages";
 import { usePrivy } from "@privy-io/react-auth";
 import { useEffect } from "react";
 import { useCommunityStore, useThemeStore, useAuthStore } from "./lib/store";
@@ -19,6 +21,9 @@ function Router() {
       <Route path="/community/:id" component={Community} />
       <Route path="/post/:id" component={PostDetail} />
       <Route path="/user/:id" component={Profile} />
+      <Route path="/discover" component={() => <Home isDiscoverPage={true} />} />
+      <Route path="/leaderboard" component={Leaderboard} />
+      <Route path="/messages" component={Messages} />
       <Route component={NotFound} />
     </Switch>
   );
