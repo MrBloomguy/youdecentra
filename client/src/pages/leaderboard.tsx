@@ -10,11 +10,7 @@ export default function Leaderboard() {
     <>
       <div className="container mx-auto px-4 py-6 pb-20 md:pb-6">
         <div className="flex items-center mb-4">
-          <Link href="/" className="mr-2 md:hidden">
-            <button className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
-              <i className="ri-arrow-left-line text-xl"></i>
-            </button>
-          </Link>
+
           <h1 className="text-2xl font-bold">User Leaderboard</h1>
         </div>
         <div className="bg-reddit-light-brighter dark:bg-reddit-dark-brighter rounded-md p-6 border border-reddit-light-border dark:border-reddit-dark-border">

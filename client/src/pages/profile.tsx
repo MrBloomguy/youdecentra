@@ -79,14 +79,7 @@ export default function Profile() {
     <>
       <main className="container mx-auto px-2 md:px-4 py-4 pb-16 md:pb-4">
         <div className="max-w-4xl mx-auto">
-          {/* Mobile Back Button */}
-          <div className="md:hidden mb-4">
-            <Link href="/" className="inline-block">
-              <button className="p-2 rounded-full hover:bg-gray-200 dark:hover:bg-gray-700">
-                <i className="ri-arrow-left-line text-xl"></i>
-              </button>
-            </Link>
-          </div>
+
           
           {/* Profile Header */}
           <div className="bg-reddit-light-brighter dark:bg-reddit-dark-brighter rounded-md overflow-hidden border border-reddit-light-border dark:border-reddit-dark-border mb-4">
