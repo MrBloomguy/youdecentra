@@ -24,6 +24,7 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from '@/components/ui/dropdown-menu';
+import { Logo, LogoWithText } from '@/components/ui/logo';
 import NotificationDropdown from '@/components/notifications/notification-dropdown';
 import { useThemeStore, useAuthStore } from '@/lib/store';
 import { useUserPoints, useTotalPoints } from '@/lib/points';
@@ -51,33 +52,37 @@ export default function Header() {
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-2">
           {location === '/' ? (
-            <Link href="/">
-              <a className="flex items-center gap-2">
-                <span className="font-bold text-xl">Web3Reddit</span>
-              </a>
-            </Link>
+            <div className="flex items-center gap-2">
+              <LogoWithText />
+            </div>
           ) : (
-            <Button
-              variant="ghost"
-              size="icon"
-              onClick={() => window.history.back()}
-              className="icon-interaction"
-              aria-label="Go back"
-            >
-              <ArrowLeft className="h-5 w-5" />
-            </Button>
+            <div className="flex items-center gap-2">
+              <Button
+                variant="ghost"
+                size="icon"
+                onClick={() => window.history.back()}
+                className="icon-interaction"
+                aria-label="Go back"
+              >
+                <ArrowLeft className="h-5 w-5" />
+              </Button>
+              <div onClick={() => window.location.href = '/'} className="cursor-pointer">
+                <Logo className="w-8 h-8" />
+              </div>
+            </div>
           )}
         </div>
         
         <div className="hidden md:flex items-center gap-4">
-          <Link href="/">
-            <a className={`flex items-center gap-1 ${
+          <div
+            onClick={() => window.location.href = '/'}
+            className={`flex items-center gap-1 cursor-pointer ${
               location === '/' ? 'text-primary' : 'text-muted-foreground'
-            }`}>
-              <Home className="h-5 w-5" />
-              <span>Home</span>
-            </a>
-          </Link>
+            }`}
+          >
+            <Home className="h-5 w-5" />
+            <span>Home</span>
+          </div>
           
           <Button variant="ghost" className="text-muted-foreground">
             <Search className="h-5 w-5 mr-2" />
@@ -148,10 +153,9 @@ export default function Header() {
                   <DropdownMenuLabel>My Account</DropdownMenuLabel>
                   <DropdownMenuSeparator />
                   
-                  <DropdownMenuItem asChild>
-                    <Link href={`/user/${user?.id}`}>
-                      <a className="w-full cursor-pointer">Profile</a>
-                    </Link>
+                  <DropdownMenuItem onClick={() => window.location.href = `/user/${user?.id}`}>
+                    <User className="mr-2 h-4 w-4" />
+                    <span>Profile</span>
                   </DropdownMenuItem>
                   
                   <DropdownMenuItem onClick={handleLogout}>
