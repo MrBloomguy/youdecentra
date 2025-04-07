@@ -8,6 +8,8 @@ const POINTS_CONTRACT_ABI = [
   "function getUserPoints(address user) view returns (uint256)",
   "function getPostPoints(uint256 postId) view returns (uint256)",
   "function getTotalPoints() view returns (uint256)",
+  "function getUserDonationPoints(address user) view returns (uint256)",
+  "function getUserRank(address user) view returns (uint256)",
   // Write functions
   "function awardPointsForPost(address user, uint256 postId, uint256 points) external",
   "function awardPointsForLike(address user, uint256 postId, uint256 points) external",
@@ -114,6 +116,42 @@ export class PointsService {
       return parseInt(points.toString());
     } catch (error) {
       console.error(`Error getting points for post ${postId}:`, error);
+      return 0;
+    }
+  }
+  
+  /**
+   * Get donation points for a specific user
+   * @param userAddress Ethereum address of the user
+   */
+  public async getUserDonationPoints(userAddress: string): Promise<number> {
+    try {
+      if (!this.contract) {
+        throw new Error('Contract not initialized');
+      }
+      
+      const points = await this.contract.getUserDonationPoints(userAddress);
+      return parseInt(points.toString());
+    } catch (error) {
+      console.error(`Error getting donation points for user ${userAddress}:`, error);
+      return 0;
+    }
+  }
+  
+  /**
+   * Get leaderboard rank for a specific user
+   * @param userAddress Ethereum address of the user
+   */
+  public async getUserRank(userAddress: string): Promise<number> {
+    try {
+      if (!this.contract) {
+        throw new Error('Contract not initialized');
+      }
+      
+      const rank = await this.contract.getUserRank(userAddress);
+      return parseInt(rank.toString());
+    } catch (error) {
+      console.error(`Error getting rank for user ${userAddress}:`, error);
       return 0;
     }
   }
@@ -397,4 +435,74 @@ export function useTotalPoints() {
   }, []);
 
   return { totalPoints, loading, error };
+}
+
+/**
+ * Hook to get donation points for a user
+ */
+export function useUserDonationPoints(userAddress?: string) {
+  const { user, authenticated } = usePrivy();
+  const [points, setPoints] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchDonationPoints = async () => {
+      if (!authenticated || (!userAddress && !user?.wallet?.address)) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const address = userAddress || user?.wallet?.address || '';
+        const donationPoints = await pointsService.getUserDonationPoints(address);
+        setPoints(donationPoints);
+        setError(null);
+      } catch (err: any) {
+        console.error('Error fetching donation points:', err);
+        setError(err.message || 'Failed to fetch donation points');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchDonationPoints();
+  }, [authenticated, user, userAddress]);
+
+  return { points, loading, error };
+}
+
+/**
+ * Hook to get user leaderboard rank
+ */
+export function useUserRank(userAddress?: string) {
+  const { user, authenticated } = usePrivy();
+  const [rank, setRank] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchRank = async () => {
+      if (!authenticated || (!userAddress && !user?.wallet?.address)) {
+        setLoading(false);
+        return;
+      }
+
+      try {
+        const address = userAddress || user?.wallet?.address || '';
+        const userRank = await pointsService.getUserRank(address);
+        setRank(userRank);
+        setError(null);
+      } catch (err: any) {
+        console.error('Error fetching user rank:', err);
+        setError(err.message || 'Failed to fetch user rank');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchRank();
+  }, [authenticated, user, userAddress]);
+
+  return { rank, loading, error };
 }

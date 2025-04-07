@@ -11,8 +11,8 @@ import { useOrbis } from '@/lib/orbis';
 import { useAuthStore } from '@/lib/store';
 import { formatAddress } from '@/lib/utils';
 import { AppPost } from '@shared/types';
-import { useUserPoints } from '@/lib/points';
-import { Award, Trophy } from 'lucide-react';
+import { useUserPoints, useUserDonationPoints, useUserRank } from '@/lib/points';
+import { Award, Trophy, Gift, Medal } from 'lucide-react';
 
 export default function Profile() {
   const [, params] = useRoute<{ id: string }>('/user/:id');
@@ -20,6 +20,8 @@ export default function Profile() {
   const { getUserPosts, getProfile } = useOrbis();
   const { user: currentUser } = useAuthStore();
   const { points: userPoints, loading: pointsLoading } = useUserPoints(userId);
+  const { points: donationPoints, loading: donationLoading } = useUserDonationPoints(userId);
+  const { rank: userRank, loading: rankLoading } = useUserRank(userId);
   
   const [posts, setPosts] = useState<AppPost[]>([]);
   const [profile, setProfile] = useState<any>(null);
@@ -98,14 +100,32 @@ export default function Profile() {
               </div>
               
               <div className="ml-24">
-                <div className="flex items-center gap-2">
-                  <h1 className="text-xl font-bold">{displayName}</h1>
-                  {!pointsLoading && userPoints > 0 && (
-                    <Badge className="bg-green-600 hover:bg-green-700 flex items-center gap-1 text-white">
-                      <Trophy className="h-3 w-3" />
-                      <span>{userPoints} Points</span>
-                    </Badge>
-                  )}
+                <div className="flex flex-col md:flex-row md:items-center gap-2">
+                  <div className="flex items-center gap-2">
+                    <h1 className="text-xl font-bold">{displayName}</h1>
+                    {!pointsLoading && userPoints > 0 && (
+                      <Badge className="bg-green-600 hover:bg-green-700 flex items-center gap-1 text-white">
+                        <Trophy className="h-3 w-3" />
+                        <span>{userPoints} Points</span>
+                      </Badge>
+                    )}
+                  </div>
+                  
+                  <div className="flex items-center gap-2 mt-1 md:mt-0">
+                    {!rankLoading && userRank > 0 && (
+                      <Badge className="bg-purple-600 hover:bg-purple-700 flex items-center gap-1 text-white">
+                        <Medal className="h-3 w-3" />
+                        <span>Rank #{userRank}</span>
+                      </Badge>
+                    )}
+                    
+                    {!donationLoading && donationPoints > 0 && (
+                      <Badge className="bg-blue-600 hover:bg-blue-700 flex items-center gap-1 text-white">
+                        <Gift className="h-3 w-3" />
+                        <span>{donationPoints} Donated</span>
+                      </Badge>
+                    )}
+                  </div>
                 </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   {formatAddress(userId)}
@@ -209,7 +229,7 @@ export default function Profile() {
                     
                     <Separator />
                     
-                    <div className="flex items-center space-x-4">
+                    <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                       <div>
                         <p className="text-sm font-medium">Posts</p>
                         <p className="text-lg font-semibold">{posts.length}</p>
@@ -223,12 +243,37 @@ export default function Profile() {
                       {!pointsLoading && (
                         <div>
                           <p className="text-sm font-medium flex items-center gap-1">
-                            <Award className="h-3 w-3" /> Points
+                            <Award className="h-3 w-3" /> Total Points
                           </p>
                           <p className="text-lg font-semibold text-green-600">{userPoints}</p>
                         </div>
                       )}
+                      
+                      {!donationLoading && (
+                        <div>
+                          <p className="text-sm font-medium flex items-center gap-1">
+                            <Gift className="h-3 w-3" /> Donation Points
+                          </p>
+                          <p className="text-lg font-semibold text-blue-600">{donationPoints}</p>
+                        </div>
+                      )}
                     </div>
+                    
+                    {!rankLoading && userRank > 0 && (
+                      <div className="mt-4 p-3 bg-gradient-to-r from-purple-500 to-pink-500 rounded-md text-white">
+                        <p className="text-sm font-medium flex items-center gap-1 mb-1">
+                          <Medal className="h-4 w-4" /> Leaderboard Rank
+                        </p>
+                        <div className="flex items-center">
+                          <p className="text-2xl font-bold">#{userRank}</p>
+                          <p className="ml-2 text-sm opacity-80">
+                            {userRank === 1 ? 'You\'re at the top!' : 
+                             userRank <= 10 ? 'Top 10 contributor!' : 
+                             userRank <= 100 ? 'Top 100 contributor!' : 'Keep it up!'}
+                          </p>
+                        </div>
+                      </div>
+                    )}
                   </div>
                 ) : (
                   <div className="animate-pulse space-y-4">
