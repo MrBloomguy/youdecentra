@@ -43,13 +43,6 @@ export default function InfoSidebar() {
             >
               Create Post
             </Button>
-            <Button 
-              onClick={() => setCreateCommunityModalOpen(true)}
-              variant="outline"
-              className="w-full border border-reddit-blue text-reddit-blue hover:bg-blue-50 dark:hover:bg-gray-800 font-semibold py-1.5 px-4 rounded-full text-sm"
-            >
-              Create Community
-            </Button>
           </div>
         </div>
       </div>
