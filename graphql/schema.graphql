@@ -1,0 +1,129 @@
+type Post @entity {
+  id: ID!
+  title: String!
+  content: String!
+  orbisPostId: String
+  mediaUrls: [String!]!
+  createdAt: BigInt!
+  upvotes: Int!
+  downvotes: Int!
+  commentCount: Int!
+  author: User!
+  community: Community!
+  comments: [Comment!]! @derivedFrom(field: "post")
+  votes: [Vote!]! @derivedFrom(field: "post")
+}
+
+type Comment @entity {
+  id: ID!
+  content: String!
+  orbisCommentId: String
+  createdAt: BigInt!
+  upvotes: Int!
+  downvotes: Int!
+  author: User!
+  post: Post!
+  parent: Comment
+  replies: [Comment!]! @derivedFrom(field: "parent")
+  votes: [Vote!]! @derivedFrom(field: "comment")
+}
+
+type Community @entity {
+  id: ID!
+  name: String!
+  description: String!
+  avatar: String
+  banner: String
+  createdBy: User!
+  orbisContext: String
+  memberCount: Int!
+  createdAt: BigInt!
+  posts: [Post!]! @derivedFrom(field: "community")
+  members: [User!]! @derivedFrom(field: "communities")
+}
+
+type User @entity {
+  id: ID!
+  walletAddress: String!
+  email: String
+  name: String
+  avatar: String
+  posts: [Post!]! @derivedFrom(field: "author")
+  comments: [Comment!]! @derivedFrom(field: "author")
+  communities: [Community!]
+  votes: [Vote!]! @derivedFrom(field: "user")
+}
+
+type Vote @entity {
+  id: ID!
+  user: User!
+  post: Post
+  comment: Comment
+  voteType: VoteType!
+  createdAt: BigInt!
+}
+
+enum VoteType {
+  UP
+  DOWN
+}
+
+type Query {
+  posts(
+    first: Int
+    skip: Int
+    orderBy: String
+    orderDirection: String
+    where: PostWhereInput
+  ): [Post!]!
+  
+  post(id: ID!): Post
+  
+  communities(
+    first: Int
+    skip: Int
+    orderBy: String
+    orderDirection: String
+    where: CommunityWhereInput
+  ): [Community!]!
+  
+  community(id: ID!): Community
+  
+  users(
+    first: Int
+    skip: Int
+    orderBy: String
+    orderDirection: String
+    where: UserWhereInput
+  ): [User!]!
+  
+  user(id: ID!): User
+}
+
+input PostWhereInput {
+  community: ID
+  author: ID
+  title_contains_nocase: String
+  content_contains_nocase: String
+  createdAt_gt: BigInt
+  createdAt_lt: BigInt
+  or: [PostWhereInput!]
+}
+
+input CommunityWhereInput {
+  name_contains_nocase: String
+  description_contains_nocase: String
+  createdBy: ID
+  or: [CommunityWhereInput!]
+}
+
+input UserWhereInput {
+  walletAddress: String
+  name_contains_nocase: String
+  or: [UserWhereInput!]
+}
+
+type Subscription {
+  postCreated: Post
+  commentCreated(postId: ID!): Comment
+}

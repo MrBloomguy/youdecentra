@@ -2,6 +2,10 @@
 declare interface Window {
   global: Window;
   Buffer: typeof Buffer;
+  process: {
+    env: Record<string, string>;
+    [key: string]: any;
+  };
 }
 
 // For modules that don't have type definitions

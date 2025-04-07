@@ -29,26 +29,27 @@ class WebSocketClient {
     }
 
     try {
-      // Get the base URL from the current location
-      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-      const host = window.location.host;
-      const url = `${protocol}//${host}/ws`;
+      // Safely determine the WebSocket URL
+      let url: string;
       
-      // Workaround for Replit: handle case where URL construction fails
-      let finalUrl = url;
-      if (url.includes('undefined')) {
-        console.warn('Invalid WebSocket URL detected. Falling back to root path.');
-        if (window.location.hostname === 'localhost') {
-          finalUrl = 'ws://localhost:3000/ws';
-        } else {
-          // Extract the replit domain if we're on replit
-          const replitDomain = window.location.hostname;
-          finalUrl = `${protocol}//${replitDomain}/ws`;
-        }
+      // Check if we're running in Replit
+      if (window.location.hostname.includes('replit')) {
+        // For Replit deployment, use the current hostname
+        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+        url = `${protocol}//${window.location.host}/ws`;
+      } else {
+        // For local development
+        url = `ws://localhost:5000/ws`;
       }
-
-      console.log(`Connecting to WebSocket server at ${finalUrl}`);
-      this.socket = new WebSocket(finalUrl);
+      
+      // Generate a unique token for authentication (simple solution for now)
+      const token = 'websocket_' + Math.random().toString(36).substring(2, 15);
+      
+      // Add token as query parameter
+      url = `${url}?token=${token}`;
+      
+      console.log(`Connecting to WebSocket server at ${url}`);
+      this.socket = new WebSocket(url);
 
       this.socket.onopen = () => {
         console.log('WebSocket connection established');
