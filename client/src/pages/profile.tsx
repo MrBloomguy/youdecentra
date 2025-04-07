@@ -372,6 +372,16 @@ export default function Profile() {
                         <p className="text-lg font-semibold">0</p>
                       </div>
 
+                      <div>
+                        <p className="text-sm font-medium">Followers</p>
+                        <p className="text-lg font-semibold">{profile?.count_followers || 0}</p>
+                      </div>
+
+                      <div>
+                        <p className="text-sm font-medium">Following</p>
+                        <p className="text-lg font-semibold">{profile?.count_following || 0}</p>
+                      </div>
+
                       {!pointsLoading && (
                         <div>
                           <p className="text-sm font-medium flex items-center gap-1">
