@@ -9,9 +9,12 @@ import {
   LogIn,
   LogOut,
   Sun,
-  Moon
+  Moon,
+  Github,
+  Trophy
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -22,7 +25,7 @@ import {
 } from '@/components/ui/dropdown-menu';
 import NotificationDropdown from '@/components/notifications/notification-dropdown';
 import { useThemeStore, useAuthStore } from '@/lib/store';
-import MessageDialog from '@/components/messaging/message-dialog';
+import { useUserPoints, useTotalPoints } from '@/lib/points';
 
 export default function Header() {
   const [location] = useLocation();
@@ -38,6 +41,10 @@ export default function Header() {
     logout();
   };
   
+  // Get user points
+  const { points: userPoints = 0, loading: pointsLoading } = useUserPoints(user?.wallet?.address);
+  const { totalPoints = 0, loading: totalPointsLoading } = useTotalPoints();
+
   return (
     <header className="sticky top-0 bg-background z-40 border-b">
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
@@ -66,11 +73,31 @@ export default function Header() {
         </div>
         
         <div className="flex items-center gap-2">
+          {/* Points display for authenticated users */}
+          {isAuthenticated && !pointsLoading && (
+            <div className="hidden md:flex items-center">
+              <Badge className="bg-green-600 hover:bg-green-700 flex items-center gap-1 text-white">
+                <Trophy className="h-3 w-3" />
+                <span>{userPoints}/{totalPoints || 0} Points</span>
+              </Badge>
+            </div>
+          )}
+          
+          {/* GitHub icon */}
+          <Button 
+            variant="ghost" 
+            size="icon" 
+            className="hidden md:flex"
+            onClick={() => window.open('https://github.com', '_blank')}
+          >
+            <Github className="h-5 w-5" />
+          </Button>
+          
+          {/* Theme toggle - shown on both mobile and desktop */}
           <Button
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
-            className="hidden md:flex"
           >
             {isDarkMode ? (
               <Sun className="h-5 w-5" />
@@ -79,21 +106,24 @@ export default function Header() {
             )}
           </Button>
           
+          {/* Mobile points display */}
+          {isAuthenticated && !pointsLoading && (
+            <div className="md:hidden flex items-center">
+              <Badge className="bg-green-600 hover:bg-green-700 flex items-center gap-1 text-white">
+                <Trophy className="h-3 w-3" />
+                <span>{userPoints}</span>
+              </Badge>
+            </div>
+          )}
+          
           {isAuthenticated ? (
             <>
+              {/* Notifications - shown on both mobile and desktop */}
               <NotificationDropdown />
               
-              {/* Message button - this would typically navigate to a messages page 
-                  but for now we'll use a demo message dialog */}
-              {user && (
-                <MessageDialog 
-                  recipientId="demo-user-id"
-                  recipientName="Demo User"
-                />
-              )}
-              
+              {/* User dropdown - only shown on desktop */}
               <DropdownMenu>
-                <DropdownMenuTrigger asChild>
+                <DropdownMenuTrigger asChild className="hidden md:flex">
                   <Button variant="ghost" size="icon" className="relative">
                     <User className="h-5 w-5" />
                   </Button>
@@ -122,6 +152,7 @@ export default function Header() {
             </Button>
           )}
           
+          {/* Mobile menu button */}
           <Button variant="ghost" size="icon" className="md:hidden">
             <Menu className="h-5 w-5" />
           </Button>

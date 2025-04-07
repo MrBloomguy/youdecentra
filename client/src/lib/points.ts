@@ -364,3 +364,37 @@ export function usePostPoints(postId: string) {
 
   return { points, loading, error };
 }
+
+/**
+ * Hook to get total points in the system
+ */
+export function useTotalPoints() {
+  const [totalPoints, setTotalPoints] = useState<number>(0);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
+
+  useEffect(() => {
+    const fetchTotalPoints = async () => {
+      try {
+        if (!pointsService.contract) {
+          console.warn('Points contract not initialized');
+          setLoading(false);
+          return;
+        }
+        
+        const points = await pointsService.contract.getTotalPoints();
+        setTotalPoints(parseInt(points.toString()));
+        setError(null);
+      } catch (err: any) {
+        console.error('Error fetching total points:', err);
+        setError(err.message || 'Failed to fetch total points');
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchTotalPoints();
+  }, []);
+
+  return { totalPoints, loading, error };
+}
