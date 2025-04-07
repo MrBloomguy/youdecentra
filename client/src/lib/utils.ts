@@ -8,9 +8,12 @@ export function cn(...inputs: ClassValue[]) {
 
 export function formatAddress(address: string): string {
   if (!address) return '';
-  
-  // Format like 0xABC...XYZ
-  return `${address.substring(0, 6)}...${address.substring(address.length - 4)}`;
+  // If it's an ENS name (contains '.eth' or similar), return as is
+  if (address.includes('.')) {
+    return address;
+  }
+  // Otherwise truncate the address
+  return `${address.slice(0, 6)}...${address.slice(-4)}`;
 }
 
 export function formatTimeAgo(timestamp: number): string {
@@ -30,13 +33,13 @@ export function getCommunityColor(name: string): string {
     'bg-yellow-500',
     'bg-indigo-500',
   ];
-  
+
   // Simple hash function to pick a consistent color for a given name
   let hash = 0;
   for (let i = 0; i < name.length; i++) {
     hash = name.charCodeAt(i) + ((hash << 5) - hash);
   }
-  
+
   const index = Math.abs(hash) % colors.length;
   return colors[index];
 }
