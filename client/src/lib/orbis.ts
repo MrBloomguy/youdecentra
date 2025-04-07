@@ -19,6 +19,7 @@ interface OrbisContextType {
   votePost: (postId: string, type: 'upvote' | 'downvote') => Promise<boolean>;
   getUserPosts: (did: string) => Promise<AppPost[]>;
   getUserVotes: (postIds: string[]) => Promise<Record<string, 'upvote' | 'downvote' | null>>;
+  getCredentials: (did: string) => Promise<any[]>;
 }
 
 // Create context with default values
@@ -565,6 +566,24 @@ export const OrbisContextProvider = ({ children }: { children: ReactNode }) => {
 
   // Using formatAddress from utils
 
+  const getCredentials = async (did: string): Promise<any[]> => {
+    if (!orbis) return [];
+    
+    try {
+      const { data, error } = await orbis.getCredentials(did);
+      
+      if (error) {
+        console.error("Error fetching credentials:", error);
+        return [];
+      }
+      
+      return data || [];
+    } catch (error) {
+      console.error("Failed to fetch credentials:", error);
+      return [];
+    }
+  };
+
   const value = {
     orbis,
     isConnected,
@@ -579,6 +598,7 @@ export const OrbisContextProvider = ({ children }: { children: ReactNode }) => {
     votePost,
     getUserPosts,
     getUserVotes,
+    getCredentials,
   };
 
   return React.createElement(OrbisContext.Provider, { value }, children);
