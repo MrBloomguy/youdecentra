@@ -160,6 +160,7 @@ export default function Profile() {
                               const username = (form.elements.namedItem('username') as HTMLInputElement).value;
                               const description = (form.elements.namedItem('description') as HTMLTextAreaElement).value;
 
+                              const { orbis } = useOrbis();
                               if (username && orbis) {
                                 try {
                                   const res = await orbis.updateProfile({
@@ -243,73 +244,9 @@ export default function Profile() {
                           }}>
                             Follow
                           </Button>
-                          <Dialog>
-                            <DialogTrigger asChild>
-                              <Button variant="outline">Edit Profile</Button>
-                            </DialogTrigger>
-                            <DialogContent>
-                              <DialogHeader>
-                                <DialogTitle>Edit Profile</DialogTitle>
-                                <DialogDescription>
-                                  Make changes to your profile here
-                                </DialogDescription>
-                              </DialogHeader>
-                              <form onSubmit={async (e) => {
-                                e.preventDefault();
-                                const form = e.target as HTMLFormElement;
-                                const username = (form.elements.namedItem('username') as HTMLInputElement).value;
-                                const description = (form.elements.namedItem('description') as HTMLTextAreaElement).value;
-
-                                if (username && orbis) {
-                                  try {
-                                    const res = await orbis.updateProfile({
-                                      username,
-                                      description,
-                                      pfp: profile?.details?.profile?.pfp
-                                    });
-
-                                    if (res.status === 200) {
-                                      toast({
-                                        title: "Profile updated",
-                                        description: "Your profile has been updated successfully"
-                                      });
-                                      const updatedProfile = await getProfile(userId);
-                                      setProfile(updatedProfile);
-                                      form.reset();
-                                    }
-                                  } catch (error) {
-                                    toast({
-                                      title: "Error",
-                                      description: "Failed to update profile",
-                                      variant: "destructive"
-                                    });
-                                  }
-                                }
-                              }}>
-                                <div className="space-y-4 py-4">
-                                  <div className="space-y-2">
-                                    <Label htmlFor="username">Username</Label>
-                                    <Input
-                                      id="username"
-                                      name="username"
-                                      defaultValue={profile?.details?.profile?.username}
-                                    />
-                                  </div>
-                                  <div className="space-y-2">
-                                    <Label htmlFor="description">Description</Label>
-                                    <Textarea
-                                      id="description"
-                                      name="description"
-                                      defaultValue={profile?.details?.profile?.description}
-                                    />
-                                  </div>
-                                </div>
-                                <DialogFooter>
-                                  <Button type="submit">Save Changes</Button>
-                                </DialogFooter>
-                              </form>
-                            </DialogContent>
-                          </Dialog>
+                          <Button variant="outline" onClick={() => window.location.href = `/user/${user?.id}`}>
+                            View Profile
+                          </Button>
                         </>
                       )}
                     </div>
