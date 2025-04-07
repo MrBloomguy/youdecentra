@@ -20,12 +20,12 @@ class WebSocketClient {
   private reconnectTimer: ReturnType<typeof setTimeout> | null = null;
   private messageListeners: ((message: WebSocketMessage) => void)[] = [];
   private statusListeners: ((connected: boolean) => void)[] = [];
-  
+
   // Specific message type handlers
   private notificationHandlers: NotificationHandler[] = [];
   private messageHandlers: MessageHandler[] = [];
   private typingIndicatorHandlers: TypingIndicatorHandler[] = [];
-  
+
   // Authentication state
   private userId: string | null = null;
   private authenticated: boolean = false;
@@ -50,12 +50,12 @@ class WebSocketClient {
       console.log('WebSocket connection already in progress');
       return;
     }
-    
+
     // Close existing connection if it's in closing or closed state
     if (this.socket && (this.socket.readyState === WebSocket.CLOSING || this.socket.readyState === WebSocket.CLOSED)) {
       this.socket = null;
     }
-    
+
     // If socket is already open, verify connection with ping
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
       console.log('WebSocket already connected - verifying connection with ping');
@@ -79,12 +79,12 @@ class WebSocketClient {
       // Determine base URL for WebSocket connection
       const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
       const host = window.location.host;
-      
+
       // Always use the same host as the page to avoid CORS issues
       const wsUrl = `${protocol}//${host}/ws`;
-      
+
       console.log(`Attempting WebSocket connection to: ${wsUrl}`);
-      
+
       // Set a connection timeout
       const connectionTimeout = setTimeout(() => {
         console.error('WebSocket connection attempt timed out');
@@ -95,20 +95,20 @@ class WebSocketClient {
           this.scheduleReconnect();
         }
       }, 10000); // 10 second timeout
-      
+
       try {
         // Create new WebSocket without query parameters for simplicity
         this.socket = new WebSocket(wsUrl);
         console.log('WebSocket object created, waiting for connection...');
-        
+
         // Add handler to clear connection timeout on successful connect
         const clearTimeoutOnOpen = () => {
           clearTimeout(connectionTimeout);
           this.socket?.removeEventListener('open', clearTimeoutOnOpen);
         };
-        
+
         this.socket.addEventListener('open', clearTimeoutOnOpen);
-        
+
       } catch (error) {
         console.error('Error creating WebSocket:', error);
         clearTimeout(connectionTimeout);
@@ -121,7 +121,7 @@ class WebSocketClient {
         // Reset reconnection attempts counter on successful connection
         this.reconnectAttempts = 0;
         this.notifyStatusListeners(true);
-        
+
         // If we have a userId and not authenticated, authenticate now
         if (this.userId && !this.authenticated) {
           this.authenticate(this.userId);
@@ -160,7 +160,7 @@ class WebSocketClient {
       clearTimeout(this.reconnectTimer);
       this.reconnectTimer = null;
     }
-    
+
     if (this.socket) {
       this.socket.close();
       this.socket = null;
@@ -212,7 +212,7 @@ class WebSocketClient {
         console.error('Error in WebSocket message listener:', error);
       }
     });
-    
+
     // Then handle specific message types
     try {
       switch (message.type) {
@@ -221,7 +221,7 @@ class WebSocketClient {
           this.userId = message.data.userId;
           console.log(`WebSocket authenticated for user: ${this.userId}`);
           break;
-        
+
         case 'new_notification':
           if (message.data) {
             this.notificationHandlers.forEach(handler => {
@@ -233,7 +233,7 @@ class WebSocketClient {
             });
           }
           break;
-        
+
         case 'new_message':
           if (message.data) {
             this.messageHandlers.forEach(handler => {
@@ -245,7 +245,7 @@ class WebSocketClient {
             });
           }
           break;
-        
+
         case 'user_typing':
           if (message.data) {
             this.typingIndicatorHandlers.forEach(handler => {
@@ -257,7 +257,7 @@ class WebSocketClient {
             });
           }
           break;
-        
+
         case 'pending_notifications':
           if (Array.isArray(message.data)) {
             message.data.forEach(notification => {
@@ -285,7 +285,7 @@ class WebSocketClient {
         console.error('Error in WebSocket status listener:', error);
       }
     });
-    
+
     // If connection was just established and we have a userId, authenticate
     if (connected && this.userId && !this.authenticated) {
       this.authenticate(this.userId);
@@ -295,40 +295,40 @@ class WebSocketClient {
   // Track reconnection attempts for exponential backoff
   private reconnectAttempts: number = 0;
   private maxReconnectDelay: number = 30000; // 30 seconds
-  
+
   private scheduleReconnect(): void {
     if (this.reconnectTimer) {
       return;
     }
-    
+
     // Reset authentication state on disconnect
     this.authenticated = false;
-    
+
     // Calculate delay with exponential backoff (2^n * 1000 ms)
     // Starting with 1 second, doubling each time up to maxReconnectDelay
     const delay = Math.min(
       Math.pow(2, this.reconnectAttempts) * 1000,
       this.maxReconnectDelay
     );
-    
+
     console.log(`Scheduling reconnection attempt in ${delay}ms (attempt #${this.reconnectAttempts + 1})`);
-    
+
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
       this.reconnectAttempts++;
       this.connect();
     }, delay);
   }
-  
+
   // Authentication
   public authenticate(userId: string): void {
     if (!userId) {
       console.warn('Cannot authenticate without userId');
       return;
     }
-    
+
     this.userId = userId;
-    
+
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
       this.send('auth', { userId });
     } else {
@@ -336,21 +336,21 @@ class WebSocketClient {
       this.connect();
     }
   }
-  
+
   // Send typing indicator for a conversation
   public sendTypingIndicator(conversationId: string, recipientId: string, isTyping: boolean): void {
     if (!this.authenticated) {
       console.warn('Cannot send typing indicator without authentication');
       return;
     }
-    
+
     this.send('typing', {
       conversationId,
       recipientId,
       isTyping
     });
   }
-  
+
   // Register notification handler
   public onNotification(handler: NotificationHandler): () => void {
     this.notificationHandlers.push(handler);
@@ -358,7 +358,7 @@ class WebSocketClient {
       this.notificationHandlers = this.notificationHandlers.filter(h => h !== handler);
     };
   }
-  
+
   // Register message handler
   public onMessage(handler: MessageHandler): () => void {
     this.messageHandlers.push(handler);
@@ -366,7 +366,7 @@ class WebSocketClient {
       this.messageHandlers = this.messageHandlers.filter(h => h !== handler);
     };
   }
-  
+
   // Register typing indicator handler
   public onTypingIndicator(handler: TypingIndicatorHandler): () => void {
     this.typingIndicatorHandlers.push(handler);
@@ -374,22 +374,22 @@ class WebSocketClient {
       this.typingIndicatorHandlers = this.typingIndicatorHandlers.filter(h => h !== handler);
     };
   }
-  
+
   // Check if authenticated
   public isAuthenticated(): boolean {
     return this.authenticated;
   }
-  
+
   // Get current user ID
   public getCurrentUserId(): string | null {
     return this.userId;
   }
-  
+
   // Ping the server to check connection
   public ping(): void {
     this.send('ping', { timestamp: new Date().toISOString() });
   }
-  
+
   // Debug method to log current connection state
   public debugConnectionState(): void {
     const states = ['CONNECTING', 'OPEN', 'CLOSING', 'CLOSED'];
@@ -397,7 +397,7 @@ class WebSocketClient {
       console.log('WebSocket status: Not initialized');
       return;
     }
-    
+
     console.log(`WebSocket status: ${states[this.socket.readyState]}`);
     console.log(`WebSocket URL: ${this.socket.url}`);
     console.log(`Authenticated: ${this.authenticated}`);
@@ -421,7 +421,7 @@ export function useNotifications(userId: string | null) {
   const [unreadCount, setUnreadCount] = useState<number>(0);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-  
+
   // Initialize WebSocket and load existing notifications
   useEffect(() => {
     if (!userId) {
@@ -430,23 +430,23 @@ export function useNotifications(userId: string | null) {
       setLoading(false);
       return;
     }
-    
+
     // Connect to WebSocket
     webSocketClient.connect();
-    
+
     // Authenticate with user ID
     webSocketClient.authenticate(userId);
-    
+
     // Load existing notifications
     const fetchNotifications = async () => {
       try {
         setLoading(true);
         const response = await fetch(`/api/notifications/user/${userId}`);
-        
+
         if (!response.ok) {
           throw new Error(`Failed to fetch notifications: ${response.status}`);
         }
-        
+
         const data = await response.json() as AppNotification[];
         setNotifications(data);
         setUnreadCount(data.filter(n => !n.read).length);
@@ -457,9 +457,9 @@ export function useNotifications(userId: string | null) {
         setLoading(false);
       }
     };
-    
+
     fetchNotifications();
-    
+
     // Listen for new notifications
     const removeListener = webSocketClient.onNotification((notification) => {
       if (notification.recipient === userId) {
@@ -469,25 +469,25 @@ export function useNotifications(userId: string | null) {
           if (exists) {
             return prev;
           }
-          
+
           // Add new notification at the beginning
           const updated = [notification, ...prev];
-          
+
           // Update unread count
           if (!notification.read) {
             setUnreadCount(count => count + 1);
           }
-          
+
           return updated;
         });
       }
     });
-    
+
     return () => {
       removeListener();
     };
   }, [userId]);
-  
+
   // Mark a notification as read
   const markAsRead = async (notificationId: string) => {
     try {
@@ -497,11 +497,11 @@ export function useNotifications(userId: string | null) {
           'Content-Type': 'application/json'
         }
       });
-      
+
       if (!response.ok) {
         throw new Error(`Failed to mark notification as read: ${response.status}`);
       }
-      
+
       // Update local state
       setNotifications(prev => 
         prev.map(n => 
@@ -510,21 +510,21 @@ export function useNotifications(userId: string | null) {
             : n
         )
       );
-      
+
       // Update unread count
       setUnreadCount(prev => Math.max(0, prev - 1));
-      
+
       return true;
     } catch (error) {
       console.error('Error marking notification as read:', error);
       return false;
     }
   };
-  
+
   // Mark all notifications as read
   const markAllAsRead = async () => {
     if (!userId) return false;
-    
+
     try {
       const response = await fetch(`/api/notifications/user/${userId}/read-all`, {
         method: 'PUT',
@@ -532,26 +532,26 @@ export function useNotifications(userId: string | null) {
           'Content-Type': 'application/json'
         }
       });
-      
+
       if (!response.ok) {
         throw new Error(`Failed to mark all notifications as read: ${response.status}`);
       }
-      
+
       // Update local state
       setNotifications(prev => 
         prev.map(n => ({ ...n, read: true }))
       );
-      
+
       // Reset unread count
       setUnreadCount(0);
-      
+
       return true;
     } catch (error) {
       console.error('Error marking all notifications as read:', error);
       return false;
     }
   };
-  
+
   return {
     notifications,
     unreadCount,
@@ -568,7 +568,14 @@ export function useMessages(userId: string | null, conversationId?: string) {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
   const [typingUsers, setTypingUsers] = useState<Record<string, boolean>>({});
-  
+  let orbis: any; // Assuming orbis is defined elsewhere
+
+  try {
+      orbis = require('@orbis/sdk');
+  } catch (error) {
+      console.error("Failed to import Orbis SDK:", error)
+  }
+
   // Load messages and setup real-time updates
   useEffect(() => {
     if (!userId) {
@@ -576,22 +583,22 @@ export function useMessages(userId: string | null, conversationId?: string) {
       setLoading(false);
       return;
     }
-    
+
     // Connect to WebSocket for real-time updates
     webSocketClient.connect();
     webSocketClient.authenticate(userId);
-    
+
     // If we have a conversationId, load messages
     if (conversationId) {
       const fetchMessages = async () => {
         try {
           setLoading(true);
           const response = await fetch(`/api/messages/conversation/${conversationId}`);
-          
+
           if (!response.ok) {
             throw new Error(`Failed to fetch messages: ${response.status}`);
           }
-          
+
           const data = await response.json() as AppMessage[];
           setMessages(data);
         } catch (err) {
@@ -601,9 +608,9 @@ export function useMessages(userId: string | null, conversationId?: string) {
           setLoading(false);
         }
       };
-      
+
       fetchMessages();
-      
+
       // Mark conversation as read
       fetch(`/api/conversations/${conversationId}/read`, {
         method: 'PUT',
@@ -615,7 +622,7 @@ export function useMessages(userId: string | null, conversationId?: string) {
         console.error('Error marking conversation as read:', error);
       });
     }
-    
+
     // Listen for new messages
     const messageListener = webSocketClient.onMessage((message) => {
       if (
@@ -628,10 +635,10 @@ export function useMessages(userId: string | null, conversationId?: string) {
           if (exists) {
             return prev;
           }
-          
+
           return [...prev, message];
         });
-        
+
         // If this is a received message in the current conversation, mark it as read
         if (conversationId && message.conversationId === conversationId && message.recipient === userId) {
           fetch(`/api/messages/${message.id}/read`, {
@@ -645,13 +652,13 @@ export function useMessages(userId: string | null, conversationId?: string) {
         }
       }
     });
-    
+
     // Listen for typing indicators
     const typingListener = webSocketClient.onTypingIndicator((data) => {
       if (conversationId && data.conversationId === conversationId) {
         if (data.isTyping) {
           setTypingUsers(prev => ({ ...prev, [data.userId]: true }));
-          
+
           // Auto-clear typing indicator after 3 seconds
           setTimeout(() => {
             setTypingUsers(prev => {
@@ -669,21 +676,21 @@ export function useMessages(userId: string | null, conversationId?: string) {
         }
       }
     });
-    
+
     return () => {
       messageListener();
       typingListener();
     };
   }, [userId, conversationId]);
-  
+
   // Send a message
   const sendMessage = async (content: string, recipientId: string): Promise<boolean> => {
     if (!userId) return false;
-    
+
     try {
       // Get or create conversation
       let conversation: AppConversation;
-      
+
       if (conversationId) {
         // Use existing conversation
         conversation = { id: conversationId } as AppConversation;
@@ -698,14 +705,14 @@ export function useMessages(userId: string | null, conversationId?: string) {
             userIds: [userId, recipientId]
           })
         });
-        
+
         if (!response.ok) {
           throw new Error(`Failed to create conversation: ${response.status}`);
         }
-        
+
         conversation = await response.json();
       }
-      
+
       // Create the message
       const message: Partial<AppMessage> = {
         conversationId: conversation.id,
@@ -715,7 +722,7 @@ export function useMessages(userId: string | null, conversationId?: string) {
         content,
         read: false
       };
-      
+
       // Send to server
       const msgResponse = await fetch('/api/messages', {
         method: 'POST',
@@ -724,32 +731,113 @@ export function useMessages(userId: string | null, conversationId?: string) {
         },
         body: JSON.stringify(message)
       });
-      
+
       if (!msgResponse.ok) {
         throw new Error(`Failed to send message: ${msgResponse.status}`);
       }
-      
+
       return true;
     } catch (error) {
       console.error('Error sending message:', error);
       return false;
     }
   };
-  
+
   // Send typing indicator
   const sendTypingIndicator = (isTyping: boolean, recipientId: string) => {
     if (!userId || !conversationId) return;
-    
+
     webSocketClient.sendTypingIndicator(conversationId, recipientId, isTyping);
   };
-  
+
+  const createNewConversation = async (recipients: string[], name?: string, description?: string) => {
+    if (!orbis) return null;
+
+    try {
+      const res = await orbis.createConversation({
+        recipients,
+        name,
+        description
+      });
+
+      if (res.status === 200) {
+        return res.doc;
+      }
+      return null;
+    } catch (error) {
+      console.error("Failed to create conversation:", error);
+      return null;
+    }
+  };
+
+  const sendNewMessage = async (conversationId: string, body: string, data?: any) => {
+    if (!orbis) return false;
+
+    try {
+      const res = await orbis.sendMessage({
+        conversation_id: conversationId,
+        body
+      }, data);
+
+      return res.status === 200;
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      return false;
+    }
+  };
+
+  const updateExistingMessage = async (messageId: string, conversationId: string, body: string, data?: any) => {
+    if (!orbis) return false;
+
+    try {
+      const res = await orbis.updateMessage(messageId, {
+        conversation_id: conversationId,
+        body
+      }, data);
+
+      return res.status === 200;
+    } catch (error) {
+      console.error("Failed to update message:", error);
+      return false;
+    }
+  };
+
+  const getConversationMessages = async (conversationId: string) => {
+    if (!orbis) return [];
+
+    try {
+      const { data, error } = await orbis.getMessages(conversationId);
+      if (error) throw error;
+
+      // Decrypt messages
+      const decryptedMessages = await Promise.all(
+        data.map(async (message) => {
+          const decrypted = await orbis.decryptMessage(message.content);
+          return {
+            ...message,
+            decryptedContent: decrypted.result
+          };
+        })
+      );
+
+      return decryptedMessages;
+    } catch (error) {
+      console.error("Failed to get messages:", error);
+      return [];
+    }
+  };
+
   return {
     messages,
     loading,
     error,
     typingUsers,
     sendMessage,
-    sendTypingIndicator
+    sendTypingIndicator,
+    createNewConversation,
+    sendNewMessage,
+    updateExistingMessage,
+    getConversationMessages
   };
 }
 
@@ -758,7 +846,7 @@ export function useConversations(userId: string | null) {
   const [conversations, setConversations] = useState<AppConversation[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<Error | null>(null);
-  
+
   // Load conversations
   useEffect(() => {
     if (!userId) {
@@ -766,16 +854,16 @@ export function useConversations(userId: string | null) {
       setLoading(false);
       return;
     }
-    
+
     const fetchConversations = async () => {
       try {
         setLoading(true);
         const response = await fetch(`/api/conversations/user/${userId}`);
-        
+
         if (!response.ok) {
           throw new Error(`Failed to fetch conversations: ${response.status}`);
         }
-        
+
         const data = await response.json() as AppConversation[];
         setConversations(data);
       } catch (err) {
@@ -785,13 +873,13 @@ export function useConversations(userId: string | null) {
         setLoading(false);
       }
     };
-    
+
     fetchConversations();
-    
+
     // Connect to WebSocket for real-time updates
     webSocketClient.connect();
     webSocketClient.authenticate(userId);
-    
+
     // Listen for new messages to update conversations
     const messageListener = webSocketClient.onMessage((message) => {
       if (message.recipient === userId || message.sender === userId) {
@@ -799,12 +887,12 @@ export function useConversations(userId: string | null) {
         fetchConversations().catch(console.error);
       }
     });
-    
+
     return () => {
       messageListener();
     };
   }, [userId]);
-  
+
   return {
     conversations,
     loading,

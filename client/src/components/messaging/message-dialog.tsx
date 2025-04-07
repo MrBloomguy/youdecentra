@@ -67,22 +67,38 @@ export default function MessageDialog({
     }, 3000);
   };
   
-  const handleSendMessage = () => {
+  const handleSendMessage = async () => {
     if (!messageText.trim() || !userId) return;
     
-    sendMessage(messageText, recipientId)
-      .then((success) => {
-        if (success) {
-          setMessageText('');
-          // Clear typing indicator when message is sent
-          sendTypingIndicator(false, recipientId);
-          if (typingTimeoutRef.current) {
-            clearTimeout(typingTimeoutRef.current);
-            typingTimeoutRef.current = null;
-          }
+    try {
+      let success;
+      if (!conversationId) {
+        // Create new conversation if none exists
+        const newConvId = await createNewConversation([recipientId]);
+        if (newConvId) {
+          success = await sendNewMessage(newConvId, messageText);
         }
-      })
-      .catch(console.error);
+      } else {
+        success = await sendNewMessage(conversationId, messageText);
+      }
+      
+      if (success) {
+        setMessageText('');
+        // Clear typing indicator when message is sent
+        sendTypingIndicator(false, recipientId);
+        if (typingTimeoutRef.current) {
+          clearTimeout(typingTimeoutRef.current);
+          typingTimeoutRef.current = null;
+        }
+      }
+    } catch (error) {
+      console.error("Failed to send message:", error);
+      toast({
+        title: "Error",
+        description: "Failed to send message",
+        variant: "destructive"
+      });
+    }
   };
   
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
