@@ -177,30 +177,52 @@ export const OrbisContextProvider = ({ children }: { children: ReactNode }) => {
     if (!orbis) return [];
     
     try {
-      const options: any = {
-        only_master: true,
+      // Add a timeout to the fetch operation
+      const fetchWithTimeout = async () => {
+        const options: any = {
+          only_master: true,
+        };
+        
+        if (context) {
+          options.context = context;
+        }
+        
+        // Set a timeout promise
+        const timeoutPromise = new Promise<any>((_, reject) => {
+          setTimeout(() => {
+            reject(new Error('Request timed out after 15 seconds'));
+          }, 15000);
+        });
+        
+        // Race between the fetch and the timeout
+        return Promise.race([
+          orbis.getPosts(options, page),
+          timeoutPromise
+        ]);
       };
       
-      if (context) {
-        options.context = context;
-      }
-      
-      const { data, error } = await orbis.getPosts(options, page);
+      const { data, error } = await fetchWithTimeout();
       
       if (error) {
         console.error("Error fetching posts:", error);
+        // Fall back to local storage cache if available
+        const cachedPosts = localStorage.getItem('cached_posts');
+        if (cachedPosts) {
+          console.log("Using cached posts data due to API error");
+          return JSON.parse(cachedPosts);
+        }
         return [];
       }
       
       // Transform Orbis posts to app posts
-      return data.map((post: OrbisPost) => {
+      const transformedPosts = data.map((post: OrbisPost) => {
         return {
           id: post.stream_id,
-          title: post.content.title,
-          content: post.content.body,
+          title: post.content.title || 'Untitled Post',
+          content: post.content.body || '',
           community: {
             id: post.content.context || "default",
-            name: post.content.context ? `w/${post.content.context.split(':')[2] || 'unknown'}` : "w/web3",
+            name: post.content.context ? post.content.context.split(':')[2] || 'unknown' : "web3",
             avatar: "",
           },
           author: {
@@ -215,8 +237,21 @@ export const OrbisContextProvider = ({ children }: { children: ReactNode }) => {
           mediaUrls: post.content.media || [],
         };
       });
+      
+      // Cache the transformed posts in localStorage for fallback
+      localStorage.setItem('cached_posts', JSON.stringify(transformedPosts));
+      
+      return transformedPosts;
     } catch (error) {
       console.error("Failed to fetch posts:", error);
+      
+      // Fall back to local storage cache if available
+      const cachedPosts = localStorage.getItem('cached_posts');
+      if (cachedPosts) {
+        console.log("Using cached posts data due to fetch error");
+        return JSON.parse(cachedPosts);
+      }
+      
       return [];
     }
   };
@@ -225,17 +260,52 @@ export const OrbisContextProvider = ({ children }: { children: ReactNode }) => {
   const getComments = async (postId: string): Promise<OrbisComment[]> => {
     if (!orbis) return [];
     
+    const cacheKey = `post_comments_${postId}`;
+    
     try {
-      const { data, error } = await orbis.getPosts({ master: postId });
+      // Add a timeout to the fetch operation
+      const fetchWithTimeout = async () => {
+        // Set a timeout promise
+        const timeoutPromise = new Promise<any>((_, reject) => {
+          setTimeout(() => {
+            reject(new Error('Request timed out after 15 seconds'));
+          }, 15000);
+        });
+        
+        // Race between the fetch and the timeout
+        return Promise.race([
+          orbis.getPosts({ master: postId }),
+          timeoutPromise
+        ]);
+      };
+      
+      const { data, error } = await fetchWithTimeout();
       
       if (error) {
         console.error("Error fetching comments:", error);
+        // Fall back to local storage cache if available
+        const cachedComments = localStorage.getItem(cacheKey);
+        if (cachedComments) {
+          console.log("Using cached comments data due to API error");
+          return JSON.parse(cachedComments);
+        }
         return [];
       }
+      
+      // Cache the comments in localStorage for fallback
+      localStorage.setItem(cacheKey, JSON.stringify(data));
       
       return data;
     } catch (error) {
       console.error("Failed to fetch comments:", error);
+      
+      // Fall back to local storage cache if available
+      const cachedComments = localStorage.getItem(cacheKey);
+      if (cachedComments) {
+        console.log("Using cached comments data due to fetch error");
+        return JSON.parse(cachedComments);
+      }
+      
       return [];
     }
   };
@@ -244,17 +314,52 @@ export const OrbisContextProvider = ({ children }: { children: ReactNode }) => {
   const getProfile = async (did: string): Promise<OrbisProfile | null> => {
     if (!orbis) return null;
     
+    const cacheKey = `user_profile_${did}`;
+    
     try {
-      const { data, error } = await orbis.getProfile(did);
+      // Add a timeout to the fetch operation
+      const fetchWithTimeout = async () => {
+        // Set a timeout promise
+        const timeoutPromise = new Promise<any>((_, reject) => {
+          setTimeout(() => {
+            reject(new Error('Request timed out after 15 seconds'));
+          }, 15000);
+        });
+        
+        // Race between the fetch and the timeout
+        return Promise.race([
+          orbis.getProfile(did),
+          timeoutPromise
+        ]);
+      };
+      
+      const { data, error } = await fetchWithTimeout();
       
       if (error) {
         console.error("Error fetching profile:", error);
+        // Fall back to local storage cache if available
+        const cachedProfile = localStorage.getItem(cacheKey);
+        if (cachedProfile) {
+          console.log("Using cached profile data due to API error");
+          return JSON.parse(cachedProfile);
+        }
         return null;
       }
+      
+      // Cache the profile in localStorage for fallback
+      localStorage.setItem(cacheKey, JSON.stringify(data));
       
       return data;
     } catch (error) {
       console.error("Failed to fetch profile:", error);
+      
+      // Fall back to local storage cache if available
+      const cachedProfile = localStorage.getItem(cacheKey);
+      if (cachedProfile) {
+        console.log("Using cached profile data due to fetch error");
+        return JSON.parse(cachedProfile);
+      }
+      
       return null;
     }
   };
@@ -337,26 +442,50 @@ export const OrbisContextProvider = ({ children }: { children: ReactNode }) => {
   const getUserPosts = async (did: string): Promise<AppPost[]> => {
     if (!orbis) return [];
     
+    const cacheKey = `user_posts_${did}`;
+    
     try {
-      const { data, error } = await orbis.getPosts({
-        did,
-        only_master: true,
-      });
+      // Add a timeout to the fetch operation
+      const fetchWithTimeout = async () => {
+        // Set a timeout promise
+        const timeoutPromise = new Promise<any>((_, reject) => {
+          setTimeout(() => {
+            reject(new Error('Request timed out after 15 seconds'));
+          }, 15000);
+        });
+        
+        // Race between the fetch and the timeout
+        return Promise.race([
+          orbis.getPosts({
+            did,
+            only_master: true,
+          }),
+          timeoutPromise
+        ]);
+      };
+      
+      const { data, error } = await fetchWithTimeout();
       
       if (error) {
         console.error("Error fetching user posts:", error);
+        // Fall back to local storage cache if available
+        const cachedPosts = localStorage.getItem(cacheKey);
+        if (cachedPosts) {
+          console.log("Using cached user posts data due to API error");
+          return JSON.parse(cachedPosts);
+        }
         return [];
       }
       
       // Transform Orbis posts to app posts
-      return data.map((post: OrbisPost) => {
+      const transformedPosts = data.map((post: OrbisPost) => {
         return {
           id: post.stream_id,
-          title: post.content.title,
-          content: post.content.body,
+          title: post.content.title || 'Untitled Post',
+          content: post.content.body || '',
           community: {
             id: post.content.context || "default",
-            name: post.content.context ? `w/${post.content.context.split(':')[2] || 'unknown'}` : "w/web3",
+            name: post.content.context ? post.content.context.split(':')[2] || 'unknown' : "web3",
             avatar: "",
           },
           author: {
@@ -371,8 +500,21 @@ export const OrbisContextProvider = ({ children }: { children: ReactNode }) => {
           mediaUrls: post.content.media || [],
         };
       });
+      
+      // Cache the transformed posts in localStorage for fallback
+      localStorage.setItem(cacheKey, JSON.stringify(transformedPosts));
+      
+      return transformedPosts;
     } catch (error) {
       console.error("Failed to fetch user posts:", error);
+      
+      // Fall back to local storage cache if available
+      const cachedPosts = localStorage.getItem(cacheKey);
+      if (cachedPosts) {
+        console.log("Using cached user posts data due to fetch error");
+        return JSON.parse(cachedPosts);
+      }
+      
       return [];
     }
   };

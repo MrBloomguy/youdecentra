@@ -56,11 +56,23 @@ class WebSocketClient {
       this.socket = null;
     }
     
-    // If socket is already open, just return
+    // If socket is already open, verify connection with ping
     if (this.socket && this.socket.readyState === WebSocket.OPEN) {
-      console.log('WebSocket already connected');
-      this.notifyStatusListeners(true);
-      return;
+      console.log('WebSocket already connected - verifying connection with ping');
+      try {
+        this.ping();
+        this.notifyStatusListeners(true);
+        return;
+      } catch (error) {
+        console.warn('Connection check failed, forcing reconnect');
+        this.disconnect();
+      }
+    }
+
+    // Clear any existing reconnect timers to avoid duplicate reconnections
+    if (this.reconnectTimer) {
+      clearTimeout(this.reconnectTimer);
+      this.reconnectTimer = null;
     }
 
     try {
@@ -73,12 +85,33 @@ class WebSocketClient {
       
       console.log(`Attempting WebSocket connection to: ${wsUrl}`);
       
+      // Set a connection timeout
+      const connectionTimeout = setTimeout(() => {
+        console.error('WebSocket connection attempt timed out');
+        if (this.socket && this.socket.readyState === WebSocket.CONNECTING) {
+          // Only close if still connecting
+          this.socket.close();
+          this.socket = null;
+          this.scheduleReconnect();
+        }
+      }, 10000); // 10 second timeout
+      
       try {
         // Create new WebSocket without query parameters for simplicity
         this.socket = new WebSocket(wsUrl);
         console.log('WebSocket object created, waiting for connection...');
+        
+        // Add handler to clear connection timeout on successful connect
+        const clearTimeoutOnOpen = () => {
+          clearTimeout(connectionTimeout);
+          this.socket?.removeEventListener('open', clearTimeoutOnOpen);
+        };
+        
+        this.socket.addEventListener('open', clearTimeoutOnOpen);
+        
       } catch (error) {
         console.error('Error creating WebSocket:', error);
+        clearTimeout(connectionTimeout);
         this.scheduleReconnect();
         return;
       }

@@ -121,6 +121,30 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     ws.on('error', (error) => {
       console.error('WebSocket error:', error);
+      // Log the error details for debugging
+      console.error('Error details:', {
+        message: error.message,
+        name: error.name,
+        stack: error.stack,
+        userId: userId
+      });
+      
+      // Send an error notification to the client if possible
+      try {
+        if (ws.readyState === WebSocket.OPEN) {
+          ws.send(JSON.stringify({
+            type: 'error',
+            data: {
+              message: 'A connection error occurred',
+              timestamp: new Date().toISOString(),
+              reconnect: true
+            }
+          }));
+        }
+      } catch (sendError) {
+        console.error('Failed to send error notification to client:', sendError);
+      }
+      
       // Don't close the connection here, just log it and let the client handle reconnection
     });
     
@@ -143,21 +167,74 @@ export async function registerRoutes(app: Express): Promise<Server> {
   
   // Function to send a message to a specific user via all their active connections
   const sendToUser = (userId: string, message: { type: string; data: any }) => {
+    if (!userId) {
+      console.warn('Attempted to send message to undefined user ID');
+      return;
+    }
+    
     const userConnections = clients.get(userId) || [];
+    
+    // If no connections, log and return
+    if (userConnections.length === 0) {
+      console.log(`No active connections for user ${userId} to deliver message type: ${message.type}`);
+      return;
+    }
+    
+    // Track failed connections for cleanup
+    const failedConnections: WebSocket[] = [];
+    
     userConnections.forEach(connection => {
       if (connection.readyState === WebSocket.OPEN) {
-        connection.send(JSON.stringify(message));
+        try {
+          connection.send(JSON.stringify(message));
+        } catch (error) {
+          console.error(`Error sending message to user ${userId}:`, error);
+          failedConnections.push(connection);
+        }
+      } else {
+        // Connection not open, mark for cleanup
+        failedConnections.push(connection);
       }
     });
+    
+    // Clean up any failed/closed connections
+    if (failedConnections.length > 0) {
+      const validConnections = userConnections.filter(conn => !failedConnections.includes(conn));
+      
+      if (validConnections.length === 0) {
+        clients.delete(userId);
+        console.log(`Removed all connections for user ${userId} due to closed/failed state`);
+      } else {
+        clients.set(userId, validConnections);
+        console.log(`Cleaned up ${failedConnections.length} connections for user ${userId}`);
+      }
+    }
   };
   
   // Broadcast function for sending messages to all clients
   const broadcast = (message: { type: string; data: any }) => {
+    if (wss.clients.size === 0) {
+      console.log(`No active connections to broadcast message type: ${message.type}`);
+      return;
+    }
+    
+    let successCount = 0;
+    let failedCount = 0;
+    
     wss.clients.forEach((client) => {
       if (client.readyState === WebSocket.OPEN) {
-        client.send(JSON.stringify(message));
+        try {
+          client.send(JSON.stringify(message));
+          successCount++;
+        } catch (error) {
+          console.error('Error broadcasting message to client:', error);
+          failedCount++;
+        }
       }
     });
+    
+    // Log statistics of the broadcast operation
+    console.log(`Broadcast message type '${message.type}' stats: ${successCount} delivered, ${failedCount} failed, ${wss.clients.size - successCount - failedCount} ignored (not ready)`);
   };
 
   // Users endpoints
