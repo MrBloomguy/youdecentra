@@ -25,31 +25,25 @@ class WebSocketClient {
 
   connect(): void {
     if (this.socket) {
+      console.log('WebSocket already connected or connecting');
       return;
     }
 
     try {
-      // Safely determine the WebSocket URL
-      let url: string;
+      // Determine base URL for WebSocket connection
+      const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
+      const host = window.location.host;
       
-      // Check if we're running in Replit
-      if (window.location.hostname.includes('replit')) {
-        // For Replit deployment, use the current hostname
-        const protocol = window.location.protocol === 'https:' ? 'wss:' : 'ws:';
-        url = `${protocol}//${window.location.host}/ws`;
-      } else {
-        // For local development
-        url = `ws://localhost:5000/ws`;
-      }
+      // Always use the same host as the page to avoid CORS issues
+      const baseUrl = `${protocol}//${host}`;
+      const wsUrl = `${baseUrl}/ws`;
       
-      // Generate a unique token for authentication (simple solution for now)
-      const token = 'websocket_' + Math.random().toString(36).substring(2, 15);
+      console.log(`Attempting WebSocket connection to: ${wsUrl}`);
       
-      // Add token as query parameter
-      url = `${url}?token=${token}`;
+      // Create new WebSocket without any query parameters for simplicity
+      this.socket = new WebSocket(wsUrl);
       
-      console.log(`Connecting to WebSocket server at ${url}`);
-      this.socket = new WebSocket(url);
+      console.log('WebSocket object created, waiting for connection...');
 
       this.socket.onopen = () => {
         console.log('WebSocket connection established');

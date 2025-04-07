@@ -1,22 +1,18 @@
-// Set up polyfills for Web3 libraries
+// Import polyfills first to ensure they're available
+import { ensurePolyfills } from './polyfills';
+
+// Buffer must still be handled separately due to Vite externalization
 import { Buffer } from 'buffer';
 
-// Create global object before any imports that might use it
-window.global = window;
+// We need to manually add Buffer to the window
+// even though Vite externalizes it
+if (typeof window !== 'undefined') {
+  // @ts-ignore
+  window.Buffer = Buffer;
+}
 
-// Important: Define globals before any imports that might use them
-// Buffer polyfill
-window.Buffer = Buffer;
-
-// Process polyfill
-window.process = window.process || { env: {} };
-
-// Console debug for polyfill checking
-console.debug("Polyfills initialized:", { 
-  hasGlobal: typeof window.global !== 'undefined',
-  hasBuffer: typeof window.Buffer !== 'undefined',
-  hasProcess: typeof window.process !== 'undefined'
-});
+// Verify polyfills are properly applied
+ensurePolyfills();
 
 import { createRoot } from "react-dom/client";
 import App from "./App";

@@ -8,15 +8,16 @@ export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
   
   // Set up WebSocket server for real-time updates
+  console.log('Setting up WebSocket server on path: /ws');
   const wss = new WebSocketServer({ 
     server: httpServer,
     path: '/ws',
-    // Allow connections from any origin
-    verifyClient: (info: { origin: string; secure: boolean; req: any }) => {
-      console.log('WebSocket connection attempt from:', info.origin);
-      return true; // Accept all connections
-    }
+    // Allow connections from any origin without verification
+    verifyClient: (_info: { origin: string; secure: boolean; req: any }) => true
   });
+  
+  // Log when the WebSocket server is ready
+  console.log('WebSocket server initialized');
 
   // Track connected clients
   const clients = new Set();
@@ -249,6 +250,22 @@ export async function registerRoutes(app: Express): Promise<Server> {
       timestamp: new Date().toISOString(),
       service: 'web3-reddit'
     });
+  });
+  
+  // WebSocket test endpoint
+  app.get('/api/websocket-test', (req, res) => {
+    // Count active WebSocket connections
+    const activeConnections = wss.clients.size;
+    
+    // Check if the WebSocket server is running
+    const wsStatus = {
+      active: true,
+      connections: activeConnections,
+      path: '/ws',
+      serverUrl: `${req.protocol === 'https' ? 'wss' : 'ws'}://${req.headers.host}/ws`
+    };
+    
+    res.status(200).json(wsStatus);
   });
 
   return httpServer;

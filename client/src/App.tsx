@@ -74,17 +74,29 @@ function App() {
     <OrbisContextProvider>
       <Router />
       <Toaster />
+      
+      {/* WebSocket Test Component (visible in development) */}
       {process.env.NODE_ENV !== 'production' && (
-        <div 
-          style={{ 
-            position: 'fixed', 
-            bottom: '10px', 
-            right: '10px', 
-            zIndex: 9999,
-            display: 'none' // Hide in UI but keep for console access
-          }}
-        >
-          <button onClick={debugWebSocket}>Debug WebSocket</button>
+        <div className="fixed bottom-4 right-4 z-50 w-96 bg-background border rounded-lg shadow-md overflow-hidden">
+          {/* Import dynamically to prevent errors in production */}
+          {(() => {
+            try {
+              const WebSocketTest = require('@/components/ui/WebSocketTest').WebSocketTest;
+              return <WebSocketTest />;
+            } catch (e) {
+              return (
+                <div className="p-4">
+                  <p className="text-red-500">Error loading WebSocket test component</p>
+                  <button 
+                    onClick={debugWebSocket}
+                    className="mt-2 px-3 py-1 bg-blue-500 text-white rounded hover:bg-blue-600"
+                  >
+                    Debug WebSocket
+                  </button>
+                </div>
+              );
+            }
+          })()}
         </div>
       )}
     </OrbisContextProvider>
