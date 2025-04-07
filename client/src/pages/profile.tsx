@@ -255,7 +255,39 @@ export default function Profile() {
                       </DialogContent>
                     </Dialog>
                   ) : (
-                    <Button className="bg-reddit-blue hover:bg-blue-600 text-white text-sm">
+                    <Button
+                      className="bg-reddit-blue hover:bg-blue-600 text-white text-sm"
+                      onClick={async () => {
+                        if (!orbis || !currentUser) {
+                          toast({
+                            title: "Not connected",
+                            description: "Please connect your wallet to follow users",
+                            variant: "destructive",
+                          });
+                          return;
+                        }
+                        try {
+                          const isFollowing = await orbis.getIsFollowing(currentUser.id, userId);
+                          const res = await orbis.setFollow(userId, !isFollowing);
+                          
+                          if (res.status === 200) {
+                            toast({
+                              title: "Success",
+                              description: isFollowing ? "Unfollowed user" : "Now following user"
+                            });
+                            // Refresh profile data to update follower count
+                            const updatedProfile = await getProfile(userId);
+                            setProfile(updatedProfile);
+                          }
+                        } catch (error) {
+                          toast({
+                            title: "Error",
+                            description: "Failed to update follow status",
+                            variant: "destructive"
+                          });
+                        }
+                      }}
+                    >
                       Follow
                     </Button>
                   )}
