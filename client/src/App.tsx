@@ -10,6 +10,7 @@ import { useEffect } from "react";
 import { useCommunityStore, useThemeStore, useAuthStore } from "./lib/store";
 import { OrbisContextProvider } from "./lib/orbis";
 import { webSocketClient } from "./lib/websocket";
+import Layout from "@/components/layout/layout";
 
 function Router() {
   return (
@@ -26,7 +27,7 @@ function Router() {
 function App() {
   const { ready, authenticated, user } = usePrivy();
   const { initializeCommunities } = useCommunityStore();
-  const { isDarkMode, toggleTheme } = useThemeStore();
+  const { isDarkMode } = useThemeStore();
   const { setUser, setIsAuthenticated } = useAuthStore();
 
   // Initialize communities on app load
@@ -58,6 +59,9 @@ function App() {
         avatar: null,
       });
       setIsAuthenticated(true);
+      
+      // Authenticate WebSocket connection with user ID
+      webSocketClient.authenticate(user.id);
     } else if (ready) {
       setIsAuthenticated(false);
     }
@@ -72,7 +76,9 @@ function App() {
 
   return (
     <OrbisContextProvider>
-      <Router />
+      <Layout>
+        <Router />
+      </Layout>
       <Toaster />
       
       {/* WebSocket Test Component (visible in development) */}

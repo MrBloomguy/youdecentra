@@ -108,3 +108,46 @@ export interface AppComment {
   userVote?: 'up' | 'down' | null;
   parentId?: string;
 }
+
+export type NotificationType = 
+  | 'post_like'
+  | 'post_comment'
+  | 'comment_like'
+  | 'comment_reply'
+  | 'mention'
+  | 'follow'
+  | 'system';
+
+export interface AppNotification {
+  id: string;
+  type: NotificationType;
+  recipient: string; // User ID of the recipient
+  sender: string | null; // User ID of the sender, null for system notifications
+  content: string; // Text content of the notification
+  relatedPostId?: string;
+  relatedCommentId?: string;
+  createdAt: number;
+  read: boolean;
+}
+
+export type MessageType = 'text' | 'media' | 'link';
+
+export interface AppMessage {
+  id: string;
+  conversationId: string;
+  sender: string;
+  recipient: string;
+  type: MessageType;
+  content: string;
+  media?: string[];
+  createdAt: number;
+  read: boolean;
+}
+
+export interface AppConversation {
+  id: string;
+  participants: string[]; // User IDs
+  lastMessage: AppMessage | null;
+  updatedAt: number;
+  unreadCount: number;
+}
