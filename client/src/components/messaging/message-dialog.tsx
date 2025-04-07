@@ -11,10 +11,11 @@ import { Input } from '@/components/ui/input';
 import { ScrollArea } from '@/components/ui/scroll-area';
 import { Separator } from '@/components/ui/separator';
 import { MessageCircle, Send, X, Paperclip } from 'lucide-react';
-import { useMessages } from '@/lib/websocket';
+import { useMessages, createNewConversation, sendNewMessage } from '@/lib/websocket';
 import { useAuthStore } from '@/lib/store';
 import { formatTimeAgo } from '@/lib/utils';
 import { AppMessage } from '@shared/types';
+import { useToast } from '@/hooks/use-toast';
 
 interface MessageDialogProps {
   recipientId: string;
@@ -33,6 +34,7 @@ export default function MessageDialog({
 }: MessageDialogProps) {
   const { user } = useAuthStore();
   const userId = user?.id || null;
+  const { toast } = useToast();
   
   const {
     messages,
