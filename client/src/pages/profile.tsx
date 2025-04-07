@@ -51,7 +51,12 @@ export default function Profile() {
         setProfile(profileData);
       } catch (error) {
         console.error('Error fetching profile:', error);
-        toast({
+        import { useToast } from "@/hooks/use-toast";
+
+// Add this at the start of your Profile component:
+const { toast } = useToast();
+
+toast({
           title: "Error loading profile",
           description: "Failed to load profile data. Using cached data if available.",
           variant: "destructive",
