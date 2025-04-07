@@ -339,9 +339,22 @@ export const OrbisContextProvider = ({ children }: { children: ReactNode }) => {
       // Try to fetch fresh data
       const { data, error } = await fetchWithTimeout();
       
-      if (error) {
+      if (error || !data) {
         console.error("Error fetching profile:", error);
-        return profile; // Return cached data if fresh fetch failed
+        if (profile) {
+          return profile; // Return cached data if fresh fetch failed
+        }
+        // Create minimal profile if no cached data
+        return {
+          did: did,
+          details: {
+            profile: {
+              username: undefined,
+              description: undefined,
+              pfp: undefined
+            }
+          }
+        };
       }
       
       // Cache the new profile data
@@ -351,9 +364,21 @@ export const OrbisContextProvider = ({ children }: { children: ReactNode }) => {
       return profile;
     } catch (error) {
       console.error("Failed to fetch profile:", error);
-      // Return cached data if available, otherwise null
+      // Return cached data if available, otherwise create minimal profile
       const cachedProfile = localStorage.getItem(cacheKey);
-      return cachedProfile ? JSON.parse(cachedProfile) : null;
+      if (cachedProfile) {
+        return JSON.parse(cachedProfile);
+      }
+      return {
+        did: did,
+        details: {
+          profile: {
+            username: undefined,
+            description: undefined,
+            pfp: undefined
+          }
+        }
+      };
     }
   };
 

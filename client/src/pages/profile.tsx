@@ -52,17 +52,24 @@ export default function Profile() {
 
       try {
         const profileData = await getProfile(userId);
-        if (!profileData) {
-          console.warn("No profile data available");
-        }
         setProfile(profileData);
       } catch (error) {
         console.error("Error fetching profile:", error);
         toast({
           title: "Error loading profile",
-          description:
-            "Failed to load profile data. Using cached data if available.",
+          description: "Failed to load complete profile data.",
           variant: "destructive",
+        });
+        // Set minimal profile data
+        setProfile({
+          did: userId,
+          details: {
+            profile: {
+              username: undefined,
+              description: undefined,
+              pfp: undefined
+            }
+          }
         });
       } finally {
         setIsLoading(false);
