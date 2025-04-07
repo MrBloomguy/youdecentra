@@ -45,14 +45,24 @@ export default function Profile() {
       
       try {
         const profileData = await getProfile(userId);
+        if (!profileData) {
+          console.warn('No profile data available');
+        }
         setProfile(profileData);
       } catch (error) {
         console.error('Error fetching profile:', error);
+        toast({
+          title: "Error loading profile",
+          description: "Failed to load profile data. Using cached data if available.",
+          variant: "destructive",
+        });
+      } finally {
+        setIsLoading(false);
       }
     };
     
     fetchProfile();
-  }, [userId, getProfile]);
+  }, [userId, getProfile, toast]);
 
   // Fetch user posts
   useEffect(() => {

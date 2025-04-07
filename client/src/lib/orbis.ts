@@ -317,50 +317,43 @@ export const OrbisContextProvider = ({ children }: { children: ReactNode }) => {
     const cacheKey = `user_profile_${did}`;
     
     try {
+      // First try to get cached data
+      const cachedProfile = localStorage.getItem(cacheKey);
+      let profile = cachedProfile ? JSON.parse(cachedProfile) : null;
+
       // Add a timeout to the fetch operation
       const fetchWithTimeout = async () => {
-        // Set a timeout promise
-        const timeoutPromise = new Promise<any>((_, reject) => {
-          setTimeout(() => {
-            reject(new Error('Request timed out after 15 seconds'));
-          }, 15000);
-        });
+        const controller = new AbortController();
+        const timeoutId = setTimeout(() => controller.abort(), 15000);
         
-        // Race between the fetch and the timeout
-        return Promise.race([
-          orbis.getProfile(did),
-          timeoutPromise
-        ]);
+        try {
+          const res = await orbis.getProfile(did);
+          clearTimeout(timeoutId);
+          return res;
+        } catch (err) {
+          clearTimeout(timeoutId);
+          throw err;
+        }
       };
       
+      // Try to fetch fresh data
       const { data, error } = await fetchWithTimeout();
       
       if (error) {
         console.error("Error fetching profile:", error);
-        // Fall back to local storage cache if available
-        const cachedProfile = localStorage.getItem(cacheKey);
-        if (cachedProfile) {
-          console.log("Using cached profile data due to API error");
-          return JSON.parse(cachedProfile);
-        }
-        return null;
+        return profile; // Return cached data if fresh fetch failed
       }
       
-      // Cache the profile in localStorage for fallback
-      localStorage.setItem(cacheKey, JSON.stringify(data));
+      // Cache the new profile data
+      profile = data;
+      localStorage.setItem(cacheKey, JSON.stringify(profile));
       
-      return data;
+      return profile;
     } catch (error) {
       console.error("Failed to fetch profile:", error);
-      
-      // Fall back to local storage cache if available
+      // Return cached data if available, otherwise null
       const cachedProfile = localStorage.getItem(cacheKey);
-      if (cachedProfile) {
-        console.log("Using cached profile data due to fetch error");
-        return JSON.parse(cachedProfile);
-      }
-      
-      return null;
+      return cachedProfile ? JSON.parse(cachedProfile) : null;
     }
   };
 
