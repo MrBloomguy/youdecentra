@@ -131,132 +131,87 @@ export default function Profile() {
                 </div>
 
                 <div className="flex-1">
-                  <div className="flex flex-col md:flex-row md:items-center gap-4">
+                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
                     <div>
-                      <h1 className="text-2xl font-bold">{displayName}</h1>
+                      <h1 className="text-2xl font-bold">
+                        {profile?.details?.profile?.username || formatAddress(userId.split(':').pop() || '')}
+                      </h1>
                       <p className="text-sm text-gray-500 dark:text-gray-400">
-                        {formatAddress(userId)}
+                        did:pr...{userId.split(':').pop()?.slice(-4)}
                       </p>
                     </div>
-                    <div className="flex gap-2 flex-wrap">
-                      {!rankLoading && userRank > 0 && (
-                        <Badge className="bg-purple-600 hover:bg-purple-700">
-                          <Medal className="w-3 h-3 mr-1" />
-                          #{userRank}
-                        </Badge>
-                      )}
-                      {!pointsLoading && userPoints > 0 && (
-                        <Badge className="bg-green-600 hover:bg-green-700">
-                          <Trophy className="w-3 h-3 mr-1" />
-                          {userPoints}
-                        </Badge>
-                      )}
-                      {!donationLoading && (
-                        <Badge className="bg-blue-600 hover:bg-blue-700">
-                          <Gift className="w-3 h-3 mr-1" />
-                          {donationPoints || 0}
-                        </Badge>
-                      )}
-                    </div>
-                  </div>
 
-                  {/* Stats Row */}
-                  <div className="flex gap-6 mt-4">
                     <div>
-                      <span className="text-sm text-gray-500 dark:text-gray-400">Posts</span>
-                      <p className="font-semibold">{posts.length}</p>
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-500 dark:text-gray-400">Followers</span>
-                      <p className="font-semibold">{profile?.count_followers || 0}</p>
-                    </div>
-                    <div>
-                      <span className="text-sm text-gray-500 dark:text-gray-400">Following</span>
-                      <p className="font-semibold">{profile?.count_following || 0}</p>
-                    </div>
-                  </div>
+                      {isOwnProfile ? (
+                        <Dialog>
+                          <DialogTrigger asChild>
+                            <Button variant="outline">Edit Profile</Button>
+                          </DialogTrigger>
+                          <DialogContent>
+                            <DialogHeader>
+                              <DialogTitle>Edit Profile</DialogTitle>
+                              <DialogDescription>
+                                Make changes to your profile here
+                              </DialogDescription>
+                            </DialogHeader>
+                            <form onSubmit={async (e) => {
+                              e.preventDefault();
+                              const form = e.target as HTMLFormElement;
+                              const username = (form.elements.namedItem('username') as HTMLInputElement).value;
+                              const description = (form.elements.namedItem('description') as HTMLTextAreaElement).value;
 
-                  {/* Bio */}
-                  {profile?.details?.profile?.description && (
-                    <p className="mt-4 text-sm text-gray-600 dark:text-gray-300">
-                      {profile.details.profile.description}
-                    </p>
-                  )}
-
-                  {/* Action Buttons */}
-                  <div className="mt-4">
-                    {isOwnProfile ? (
-                      <Dialog>
-                        <DialogTrigger asChild>
-                          <Button variant="outline">Edit Profile</Button>
-                        </DialogTrigger>
-                        <DialogContent>
-                          <DialogHeader>
-                            <DialogTitle>Edit Profile</DialogTitle>
-                            <DialogDescription>
-                              Make changes to your profile here
-                            </DialogDescription>
-                          </DialogHeader>
-                          <form onSubmit={async (e) => {
-                            e.preventDefault();
-                            const form = e.target as HTMLFormElement;
-                            const username = (form.elements.namedItem('username') as HTMLInputElement).value;
-                            const description = (form.elements.namedItem('description') as HTMLTextAreaElement).value;
-
-                            if (username && orbis) {
-                              try {
-                                const res = await orbis.updateProfile({
-                                  username,
-                                  description,
-                                  pfp: profile?.details?.profile?.pfp
-                                });
-
-                                if (res.status === 200) {
-                                  toast({
-                                    title: "Profile updated",
-                                    description: "Your profile has been updated successfully"
+                              if (username && orbis) {
+                                try {
+                                  const res = await orbis.updateProfile({
+                                    username,
+                                    description,
+                                    pfp: profile?.details?.profile?.pfp
                                   });
-                                  const updatedProfile = await getProfile(userId);
-                                  setProfile(updatedProfile);
-                                  form.reset();
+
+                                  if (res.status === 200) {
+                                    toast({
+                                      title: "Profile updated",
+                                      description: "Your profile has been updated successfully"
+                                    });
+                                    const updatedProfile = await getProfile(userId);
+                                    setProfile(updatedProfile);
+                                    form.reset();
+                                  }
+                                } catch (error) {
+                                  toast({
+                                    title: "Error",
+                                    description: "Failed to update profile",
+                                    variant: "destructive"
+                                  });
                                 }
-                              } catch (error) {
-                                toast({
-                                  title: "Error",
-                                  description: "Failed to update profile",
-                                  variant: "destructive"
-                                });
                               }
-                            }
-                          }}>
-                            <div className="space-y-4 py-4">
-                              <div className="space-y-2">
-                                <Label htmlFor="username">Username</Label>
-                                <Input
-                                  id="username"
-                                  name="username"
-                                  defaultValue={profile?.details?.profile?.username}
-                                />
+                            }}>
+                              <div className="space-y-4 py-4">
+                                <div className="space-y-2">
+                                  <Label htmlFor="username">Username</Label>
+                                  <Input
+                                    id="username"
+                                    name="username"
+                                    defaultValue={profile?.details?.profile?.username}
+                                  />
+                                </div>
+                                <div className="space-y-2">
+                                  <Label htmlFor="description">Description</Label>
+                                  <Textarea
+                                    id="description"
+                                    name="description"
+                                    defaultValue={profile?.details?.profile?.description}
+                                  />
+                                </div>
                               </div>
-                              <div className="space-y-2">
-                                <Label htmlFor="description">Description</Label>
-                                <Textarea
-                                  id="description"
-                                  name="description"
-                                  defaultValue={profile?.details?.profile?.description}
-                                />
-                              </div>
-                            </div>
-                            <DialogFooter>
-                              <Button type="submit">Save Changes</Button>
-                            </DialogFooter>
-                          </form>
-                        </DialogContent>
-                      </Dialog>
-                    ) : (
-                      <Button
-                        variant="default"
-                        onClick={async () => {
+                              <DialogFooter>
+                                <Button type="submit">Save Changes</Button>
+                              </DialogFooter>
+                            </form>
+                          </DialogContent>
+                        </Dialog>
+                      ) : (
+                        <Button variant="default" onClick={async () => {
                           if (!orbis || !currentUser) {
                             toast({
                               title: "Not connected",
@@ -284,12 +239,18 @@ export default function Profile() {
                               variant: "destructive"
                             });
                           }
-                        }}
-                      >
-                        Follow
-                      </Button>
-                    )}
+                        }}>
+                          Follow
+                        </Button>
+                      )}
+                    </div>
                   </div>
+
+                  {profile?.details?.profile?.description && (
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                      {profile.details.profile.description}
+                    </p>
+                  )}
                 </div>
               </div>
 
