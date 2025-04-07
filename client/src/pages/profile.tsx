@@ -115,8 +115,8 @@ export default function Profile() {
             {/* Main Profile Content */}
             <div className="px-6 pb-6 relative">
               {/* Avatar and Basic Info */}
-              <div className="flex flex-col md:flex-row items-start md:items-end gap-4 -mt-12 mb-6">
-                <div className="w-24 h-24 rounded-full border-4 border-reddit-light-brighter dark:border-reddit-dark-brighter bg-gray-200 dark:bg-gray-700 overflow-hidden flex-shrink-0">
+              <div className="flex flex-col items-center md:items-start gap-4 -mt-12 mb-6">
+                <div className="w-32 h-32 rounded-full border-4 border-reddit-light-brighter dark:border-reddit-dark-brighter bg-gray-200 dark:bg-gray-700 overflow-hidden flex-shrink-0">
                   {profile?.details?.profile?.pfp ? (
                     <img
                       src={profile.details.profile.pfp}
@@ -125,23 +125,23 @@ export default function Profile() {
                     />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center">
-                      <User className="w-12 h-12 text-gray-400" />
+                      <User className="w-16 h-16 text-gray-400" />
                     </div>
                   )}
                 </div>
 
-                <div className="flex-1">
-                  <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
-                    <div>
-                      <h1 className="text-2xl font-bold">
+                <div className="w-full flex flex-col items-center md:items-start">
+                  <div className="flex flex-col md:flex-row w-full items-center justify-between gap-4">
+                    <div className="text-center md:text-left">
+                      <h1 className="text-3xl font-bold mb-1">
                         {profile?.details?.profile?.username || formatAddress(userId.split(':').pop() || '')}
                       </h1>
-                      <p className="text-sm text-gray-500 dark:text-gray-400">
-                        did:pr...{userId.split(':').pop()?.slice(-4)}
-                      </p>
+                      <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
+                        <span className="text-sm">@{userId.split(':').pop()?.slice(-8)}</span>
+                      </div>
                     </div>
 
-                    <div>
+                    <div className="flex gap-2">
                       {isOwnProfile ? (
                         <Dialog>
                           <DialogTrigger asChild>
@@ -246,8 +246,30 @@ export default function Profile() {
                     </div>
                   </div>
 
+                  {/* Stats Section */}
+                  <div className="flex justify-center md:justify-start gap-8 mt-6 border-t border-b border-gray-200 dark:border-gray-700 py-4">
+                    <div className="text-center">
+                      <p className="text-xl font-semibold">{posts.length}</p>
+                      <p className="text-sm text-gray-500">Posts</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xl font-semibold">{profile?.count_followers || 0}</p>
+                      <p className="text-sm text-gray-500">Followers</p>
+                    </div>
+                    <div className="text-center">
+                      <p className="text-xl font-semibold">{profile?.count_following || 0}</p>
+                      <p className="text-sm text-gray-500">Following</p>
+                    </div>
+                    {!rankLoading && userRank > 0 && (
+                      <div className="text-center">
+                        <p className="text-xl font-semibold text-purple-600">#{userRank}</p>
+                        <p className="text-sm text-gray-500">Rank</p>
+                      </div>
+                    )}
+                  </div>
+
                   {profile?.details?.profile?.description && (
-                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                    <p className="text-sm text-gray-600 dark:text-gray-300 mt-4">
                       {profile.details.profile.description}
                     </p>
                   )}
