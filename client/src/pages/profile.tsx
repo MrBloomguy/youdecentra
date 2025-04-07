@@ -211,37 +211,106 @@ export default function Profile() {
                           </DialogContent>
                         </Dialog>
                       ) : (
-                        <Button variant="default" onClick={async () => {
-                          if (!orbis || !currentUser) {
-                            toast({
-                              title: "Not connected",
-                              description: "Please connect your wallet to follow users",
-                              variant: "destructive",
-                            });
-                            return;
-                          }
-                          try {
-                            const isFollowing = await orbis.getIsFollowing(currentUser.id, userId);
-                            const res = await orbis.setFollow(userId, !isFollowing);
-
-                            if (res.status === 200) {
+                        <>
+                          <Button variant="default" onClick={async () => {
+                            if (!orbis || !currentUser) {
                               toast({
-                                title: "Success",
-                                description: isFollowing ? "Unfollowed user" : "Now following user"
+                                title: "Not connected",
+                                description: "Please connect your wallet to follow users",
+                                variant: "destructive",
                               });
-                              const updatedProfile = await getProfile(userId);
-                              setProfile(updatedProfile);
+                              return;
                             }
-                          } catch (error) {
-                            toast({
-                              title: "Error",
-                              description: "Failed to update follow status",
-                              variant: "destructive"
-                            });
-                          }
-                        }}>
-                          Follow
-                        </Button>
+                            try {
+                              const isFollowing = await orbis.getIsFollowing(currentUser.id, userId);
+                              const res = await orbis.setFollow(userId, !isFollowing);
+
+                              if (res.status === 200) {
+                                toast({
+                                  title: "Success",
+                                  description: isFollowing ? "Unfollowed user" : "Now following user"
+                                });
+                                const updatedProfile = await getProfile(userId);
+                                setProfile(updatedProfile);
+                              }
+                            } catch (error) {
+                              toast({
+                                title: "Error",
+                                description: "Failed to update follow status",
+                                variant: "destructive"
+                              });
+                            }
+                          }}>
+                            Follow
+                          </Button>
+                          <Dialog>
+                            <DialogTrigger asChild>
+                              <Button variant="outline">Edit Profile</Button>
+                            </DialogTrigger>
+                            <DialogContent>
+                              <DialogHeader>
+                                <DialogTitle>Edit Profile</DialogTitle>
+                                <DialogDescription>
+                                  Make changes to your profile here
+                                </DialogDescription>
+                              </DialogHeader>
+                              <form onSubmit={async (e) => {
+                                e.preventDefault();
+                                const form = e.target as HTMLFormElement;
+                                const username = (form.elements.namedItem('username') as HTMLInputElement).value;
+                                const description = (form.elements.namedItem('description') as HTMLTextAreaElement).value;
+
+                                if (username && orbis) {
+                                  try {
+                                    const res = await orbis.updateProfile({
+                                      username,
+                                      description,
+                                      pfp: profile?.details?.profile?.pfp
+                                    });
+
+                                    if (res.status === 200) {
+                                      toast({
+                                        title: "Profile updated",
+                                        description: "Your profile has been updated successfully"
+                                      });
+                                      const updatedProfile = await getProfile(userId);
+                                      setProfile(updatedProfile);
+                                      form.reset();
+                                    }
+                                  } catch (error) {
+                                    toast({
+                                      title: "Error",
+                                      description: "Failed to update profile",
+                                      variant: "destructive"
+                                    });
+                                  }
+                                }
+                              }}>
+                                <div className="space-y-4 py-4">
+                                  <div className="space-y-2">
+                                    <Label htmlFor="username">Username</Label>
+                                    <Input
+                                      id="username"
+                                      name="username"
+                                      defaultValue={profile?.details?.profile?.username}
+                                    />
+                                  </div>
+                                  <div className="space-y-2">
+                                    <Label htmlFor="description">Description</Label>
+                                    <Textarea
+                                      id="description"
+                                      name="description"
+                                      defaultValue={profile?.details?.profile?.description}
+                                    />
+                                  </div>
+                                </div>
+                                <DialogFooter>
+                                  <Button type="submit">Save Changes</Button>
+                                </DialogFooter>
+                              </form>
+                            </DialogContent>
+                          </Dialog>
+                        </>
                       )}
                     </div>
                   </div>
