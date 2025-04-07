@@ -42,8 +42,8 @@
     --card-foreground: 210 20% 98%;
     --popover: 224 71.4% 4.1%;
     --popover-foreground: 210 20% 98%;
-    --primary: 16 100% 50%;
-    --primary-foreground: 210 20% 98%;
+    --primary: 73 84% 65%; /* CDEB63 - lime green */
+    --primary-foreground: 0 0% 0%; /* Black text on lime buttons */
     --secondary: 215 27.9% 16.9%;
     --secondary-foreground: 210 20% 98%;
     --muted: 215 27.9% 16.9%;
@@ -54,28 +54,62 @@
     --destructive-foreground: 210 20% 98%;
     --border: 215 27.9% 16.9%;
     --input: 215 27.9% 16.9%;
-    --ring: 16 100% 50%;
+    --ring: 73 84% 65%; /* CDEB63 - lime green */
   }
 }
 
 @layer components {
+  /* Button micro-interactions */
+  .btn-micro-interaction {
+    @apply transition-all duration-200 ease-out transform hover:scale-105 active:scale-95;
+  }
+
+  .btn-subtle-interaction {
+    @apply transition-all duration-150 ease-out hover:brightness-110 active:brightness-90;
+  }
+
+  .icon-interaction {
+    @apply transition-all duration-150 ease-out hover:scale-110 active:scale-95;
+  }
+
+  .item-hover-effect {
+    @apply transition-all duration-200 ease-out hover:bg-black/5 dark:hover:bg-white/5;
+  }
+
+  .card-hover-effect {
+    @apply transition-all duration-200 ease-out hover:translate-y-[-2px] hover:shadow-md;
+  }
+
+  /* Post card hover effects */
   .post-card {
-    @apply transition-all duration-200 ease-in-out;
+    @apply transition-all duration-200 ease-out;
   }
   .post-card:hover {
-    @apply border-reddit-neutral;
+    @apply border-border dark:border-primary/40 shadow-sm;
   }
+
+  /* Voting arrows effects */
   .vote-arrow {
-    @apply transition-colors duration-100 ease-in;
+    @apply transition-all duration-150 ease-out transform;
   }
   .vote-arrow:hover {
-    @apply text-reddit-orange;
+    @apply text-primary scale-110;
   }
   .voted-up {
-    @apply text-reddit-orange;
+    @apply text-primary;
   }
   .voted-down {
     @apply text-blue-500;
+  }
+
+  /* Link hover effects */
+  .link-hover {
+    @apply transition-all duration-150 ease-out border-b border-transparent hover:border-current;
+  }
+
+  /* Badge hover effects */
+  .badge-hover {
+    @apply transition-all duration-150 ease-out hover:brightness-110 hover:shadow-sm;
   }
 }
 

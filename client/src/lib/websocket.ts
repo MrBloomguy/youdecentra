@@ -46,8 +46,20 @@ class WebSocketClient {
   }
 
   connect(): void {
-    if (this.socket) {
-      console.log('WebSocket already connected or connecting');
+    if (this.socket && this.socket.readyState === WebSocket.CONNECTING) {
+      console.log('WebSocket connection already in progress');
+      return;
+    }
+    
+    // Close existing connection if it's in closing or closed state
+    if (this.socket && (this.socket.readyState === WebSocket.CLOSING || this.socket.readyState === WebSocket.CLOSED)) {
+      this.socket = null;
+    }
+    
+    // If socket is already open, just return
+    if (this.socket && this.socket.readyState === WebSocket.OPEN) {
+      console.log('WebSocket already connected');
+      this.notifyStatusListeners(true);
       return;
     }
 
@@ -63,13 +75,18 @@ class WebSocketClient {
       
       // Create new WebSocket without any query parameters for simplicity
       this.socket = new WebSocket(wsUrl);
-      console.log('WebSocket created successfully');
-      
       console.log('WebSocket object created, waiting for connection...');
 
       this.socket.onopen = () => {
-        console.log('WebSocket connection established');
+        console.log('WebSocket connection established successfully');
+        // Reset reconnection attempts counter on successful connection
+        this.reconnectAttempts = 0;
         this.notifyStatusListeners(true);
+        
+        // If we have a userId and not authenticated, authenticate now
+        if (this.userId && !this.authenticated) {
+          this.authenticate(this.userId);
+        }
       };
 
       this.socket.onmessage = (event) => {
@@ -81,16 +98,17 @@ class WebSocketClient {
         }
       };
 
-      this.socket.onclose = () => {
-        console.log('WebSocket connection closed, attempting to reconnect...');
+      this.socket.onclose = (event) => {
+        console.log(`WebSocket connection closed (code: ${event.code}, reason: ${event.reason || 'No reason provided'})`);
         this.socket = null;
         this.notifyStatusListeners(false);
         this.scheduleReconnect();
       };
 
-      this.socket.onerror = (error) => {
-        console.error('WebSocket error:', error);
-        this.socket?.close();
+      this.socket.onerror = (event) => {
+        console.error('WebSocket error occurred');
+        // Don't close the socket here, as it will trigger onclose event automatically
+        // Just log the error and let the normal reconnection logic handle it
       };
     } catch (error) {
       console.error('Error connecting to WebSocket server:', error);
@@ -235,6 +253,10 @@ class WebSocketClient {
     }
   }
 
+  // Track reconnection attempts for exponential backoff
+  private reconnectAttempts: number = 0;
+  private maxReconnectDelay: number = 30000; // 30 seconds
+  
   private scheduleReconnect(): void {
     if (this.reconnectTimer) {
       return;
@@ -243,11 +265,20 @@ class WebSocketClient {
     // Reset authentication state on disconnect
     this.authenticated = false;
     
-    // Reconnect after 5 seconds
+    // Calculate delay with exponential backoff (2^n * 1000 ms)
+    // Starting with 1 second, doubling each time up to maxReconnectDelay
+    const delay = Math.min(
+      Math.pow(2, this.reconnectAttempts) * 1000,
+      this.maxReconnectDelay
+    );
+    
+    console.log(`Scheduling reconnection attempt in ${delay}ms (attempt #${this.reconnectAttempts + 1})`);
+    
     this.reconnectTimer = setTimeout(() => {
       this.reconnectTimer = null;
+      this.reconnectAttempts++;
       this.connect();
-    }, 5000);
+    }, delay);
   }
   
   // Authentication

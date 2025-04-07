@@ -76,7 +76,7 @@ export default function Header() {
           {/* Points display for authenticated users */}
           {isAuthenticated && !pointsLoading && (
             <div className="hidden md:flex items-center">
-              <Badge className="bg-primary hover:bg-primary/90 flex items-center gap-1 text-black dark:text-black">
+              <Badge className="bg-primary hover:bg-primary/90 flex items-center gap-1 text-black dark:text-black badge-hover">
                 <Trophy className="h-3 w-3" />
                 <span>{userPoints}/{totalPoints || 0} Points</span>
               </Badge>
@@ -87,8 +87,9 @@ export default function Header() {
           <Button 
             variant="ghost" 
             size="icon" 
-            className="hidden md:flex"
+            className="hidden md:flex icon-interaction"
             onClick={() => window.open('https://github.com', '_blank')}
+            aria-label="View source code on GitHub"
           >
             <Github className="h-5 w-5" />
           </Button>
@@ -98,6 +99,8 @@ export default function Header() {
             variant="ghost"
             size="icon"
             onClick={toggleTheme}
+            className="icon-interaction"
+            aria-label={isDarkMode ? "Switch to light mode" : "Switch to dark mode"}
           >
             {isDarkMode ? (
               <Sun className="h-5 w-5" />
@@ -109,7 +112,7 @@ export default function Header() {
           {/* Mobile points display */}
           {isAuthenticated && !pointsLoading && (
             <div className="md:hidden flex items-center">
-              <Badge className="bg-primary hover:bg-primary/90 flex items-center gap-1 text-black dark:text-black">
+              <Badge className="bg-primary hover:bg-primary/90 flex items-center gap-1 text-black dark:text-black badge-hover">
                 <Trophy className="h-3 w-3" />
                 <span>{userPoints}</span>
               </Badge>
@@ -124,7 +127,7 @@ export default function Header() {
               {/* User dropdown - only shown on desktop */}
               <DropdownMenu>
                 <DropdownMenuTrigger asChild className="hidden md:flex">
-                  <Button variant="ghost" size="icon" className="relative">
+                  <Button variant="ghost" size="icon" className="relative icon-interaction">
                     <User className="h-5 w-5" />
                   </Button>
                 </DropdownMenuTrigger>
@@ -146,14 +149,14 @@ export default function Header() {
               </DropdownMenu>
             </>
           ) : (
-            <Button onClick={handleLogin} className="gap-2 bg-primary hover:bg-primary/90 text-black dark:text-black">
+            <Button onClick={handleLogin} className="gap-2 bg-primary hover:bg-primary/90 text-black dark:text-black btn-micro-interaction">
               <LogIn className="h-4 w-4" />
               <span>Login</span>
             </Button>
           )}
           
           {/* Mobile menu button */}
-          <Button variant="ghost" size="icon" className="md:hidden">
+          <Button variant="ghost" size="icon" className="md:hidden icon-interaction">
             <Menu className="h-5 w-5" />
           </Button>
         </div>
