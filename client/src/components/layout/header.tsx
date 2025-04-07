@@ -11,7 +11,8 @@ import {
   Sun,
   Moon,
   Github,
-  Trophy
+  Trophy,
+  ArrowLeft
 } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -49,11 +50,23 @@ export default function Header() {
     <header className="sticky top-0 bg-background z-40 border-b">
       <div className="container flex h-16 items-center justify-between px-4 md:px-6">
         <div className="flex items-center gap-2">
-          <Link href="/">
-            <a className="flex items-center gap-2">
-              <span className="font-bold text-xl">Web3Reddit</span>
-            </a>
-          </Link>
+          {location === '/' ? (
+            <Link href="/">
+              <a className="flex items-center gap-2">
+                <span className="font-bold text-xl">Web3Reddit</span>
+              </a>
+            </Link>
+          ) : (
+            <Button
+              variant="ghost"
+              size="icon"
+              onClick={() => window.history.back()}
+              className="icon-interaction"
+              aria-label="Go back"
+            >
+              <ArrowLeft className="h-5 w-5" />
+            </Button>
+          )}
         </div>
         
         <div className="hidden md:flex items-center gap-4">
