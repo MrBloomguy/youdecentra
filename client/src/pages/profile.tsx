@@ -132,9 +132,7 @@ export default function Profile() {
                   <div className="flex items-center gap-2">
                     <h1 className="text-xl font-bold">
                       {profile?.details?.profile?.username || 
-                       (userId.startsWith('0x') ? formatAddress(userId) : 
-                        userId.includes('@') ? userId : 
-                        formatAddress(userId.split(':').pop() || ''))}
+                       formatAddress(userId.startsWith('0x') ? userId : userId.split(':').pop() || '')}
                     </h1>
                     {!pointsLoading && userPoints > 0 && (
                       <Badge className="bg-green-600 hover:bg-green-700 flex items-center gap-1 text-white">
@@ -174,7 +172,36 @@ export default function Profile() {
 
                 <div className="flex mt-4">
                   {isOwnProfile ? (
-                    <Button variant="outline" className="text-sm">
+                    <Button 
+                      variant="outline" 
+                      className="text-sm"
+                      onClick={async () => {
+                        const newUsername = prompt('Enter new username:');
+                        if (newUsername && orbis) {
+                          try {
+                            const res = await orbis.updateProfile({
+                              username: newUsername,
+                              description: profile?.details?.profile?.description
+                            });
+                            if (res.status === 200) {
+                              toast({
+                                title: "Profile updated",
+                                description: "Your profile has been updated successfully"
+                              });
+                              // Refresh profile data
+                              const updatedProfile = await getProfile(userId);
+                              setProfile(updatedProfile);
+                            }
+                          } catch (error) {
+                            toast({
+                              title: "Error",
+                              description: "Failed to update profile",
+                              variant: "destructive"
+                            });
+                          }
+                        }
+                      }}
+                    >
                       Edit Profile
                     </Button>
                   ) : (
