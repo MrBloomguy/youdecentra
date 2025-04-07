@@ -140,32 +140,48 @@ export default function Profile() {
               </div>
 
               <div className="ml-24">
-                <div className="flex flex-col md:flex-row md:items-center gap-2">
-                  <div className="flex items-center gap-2">
-                    <h1 className="text-xl font-bold">
-                      {profile?.details?.profile?.username || 
-                       formatAddress(userId.startsWith('0x') ? userId : userId.split(':').pop() || '')}
-                    </h1>
-                    {!pointsLoading && userPoints > 0 && (
-                      <Badge className="bg-green-600 hover:bg-green-700 flex items-center gap-1 text-white">
-                        <Trophy className="h-3 w-3" />
-                        <span>{userPoints} Points</span>
-                      </Badge>
-                    )}
+                <div className="flex flex-col gap-4">
+                  <div className="flex flex-col md:flex-row md:items-center gap-2">
+                    <div className="flex items-center gap-2">
+                      <h1 className="text-xl font-bold">
+                        {profile?.details?.profile?.username || 
+                         formatAddress(userId.startsWith('0x') ? userId : userId.split(':').pop() || '')}
+                      </h1>
+                      {!pointsLoading && userPoints > 0 && (
+                        <Badge className="bg-green-600 hover:bg-green-700 flex items-center gap-1 text-white">
+                          <Trophy className="h-3 w-3" />
+                          <span>{userPoints} Points</span>
+                        </Badge>
+                      )}
+                    </div>
                   </div>
 
-                  <div className="flex items-center gap-2 mt-1 md:mt-0">
+                  {profile?.details?.profile?.description && (
+                    <p className="text-sm text-gray-600 dark:text-gray-300">
+                      {profile.details.profile.description}
+                    </p>
+                  )}
+
+                  <div className="flex flex-wrap gap-4">
                     {!rankLoading && userRank > 0 && (
                       <Badge className="bg-purple-600 hover:bg-purple-700 flex items-center gap-1 text-white">
                         <Medal className="h-3 w-3" />
-                        <span>#{userRank}</span>
+                        <span>Rank #{userRank}</span>
                       </Badge>
                     )}
 
-                    {!donationLoading && (
-                      <Badge className="bg-blue-600 hover:bg-blue-700 flex items-center gap-1 text-white">
+                    <Badge className="bg-blue-600 hover:bg-blue-700 flex items-center gap-1 text-white">
+                      <span>{profile?.count_followers || 0} Followers</span>
+                    </Badge>
+
+                    <Badge className="bg-blue-600 hover:bg-blue-700 flex items-center gap-1 text-white">
+                      <span>{profile?.count_following || 0} Following</span>
+                    </Badge>
+
+                  {!donationLoading && (
+                      <Badge className="bg-green-600 hover:bg-green-700 flex items-center gap-1 text-white">
                         <Gift className="h-3 w-3" />
-                        <span>{donationPoints || 0}</span>
+                        <span>{donationPoints || 0} Points</span>
                       </Badge>
                     )}
                   </div>
