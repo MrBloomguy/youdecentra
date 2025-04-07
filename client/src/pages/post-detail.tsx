@@ -11,6 +11,8 @@ import { useAuthStore, useUIStore } from '@/lib/store';
 import { formatTimeAgo, getCommunityColor, getCommunityInitial } from '@/lib/utils';
 import { AppPost, OrbisComment } from '@shared/types';
 import { useToast } from '@/hooks/use-toast';
+import { pointsService } from '@/lib/points';
+import { usePrivy } from '@privy-io/react-auth';
 
 export default function PostDetail() {
   const [, params] = useRoute<{ id: string }>('/post/:id');
@@ -19,6 +21,7 @@ export default function PostDetail() {
   const { isAuthenticated, user } = useAuthStore();
   const { setAuthModalOpen } = useUIStore();
   const { toast } = useToast();
+  const { user: privyUser } = usePrivy();
   
   const [post, setPost] = useState<AppPost | null>(null);
   const [comments, setComments] = useState<OrbisComment[]>([]);
@@ -99,10 +102,33 @@ export default function PostDetail() {
         // Update the post's comment count
         setPost(prev => prev ? { ...prev, commentCount: prev.commentCount + 1 } : null);
         
-        toast({
-          title: 'Comment posted',
-          description: 'Your comment has been posted successfully.',
-        });
+        // Award points for commenting if user has a wallet
+        if (privyUser?.wallet?.address) {
+          try {
+            await pointsService.awardPointsForComment(
+              privyUser.wallet.address,
+              post.id,
+              commentId,
+              2 // Default points for commenting
+            );
+            
+            toast({
+              title: 'Comment posted',
+              description: 'Your comment has been posted successfully. You earned 2 points!',
+            });
+          } catch (error) {
+            console.error('Error awarding points for comment:', error);
+            toast({
+              title: 'Comment posted',
+              description: 'Your comment has been posted successfully.',
+            });
+          }
+        } else {
+          toast({
+            title: 'Comment posted',
+            description: 'Your comment has been posted successfully.',
+          });
+        }
       } else {
         toast({
           title: 'Comment failed',

@@ -4,18 +4,22 @@ import Navbar from '@/components/layout/navbar';
 import MobileNav from '@/components/layout/mobile-nav';
 import PostCard from '@/components/home/post-card';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { Separator } from '@/components/ui/separator';
 import { useOrbis } from '@/lib/orbis';
 import { useAuthStore } from '@/lib/store';
 import { formatAddress } from '@/lib/utils';
 import { AppPost } from '@shared/types';
+import { useUserPoints } from '@/lib/points';
+import { Award, Trophy } from 'lucide-react';
 
 export default function Profile() {
   const [, params] = useRoute<{ id: string }>('/user/:id');
   const userId = params?.id || '';
   const { getUserPosts, getProfile } = useOrbis();
   const { user: currentUser } = useAuthStore();
+  const { points: userPoints, loading: pointsLoading } = useUserPoints(userId);
   
   const [posts, setPosts] = useState<AppPost[]>([]);
   const [profile, setProfile] = useState<any>(null);
@@ -94,7 +98,15 @@ export default function Profile() {
               </div>
               
               <div className="ml-24">
-                <h1 className="text-xl font-bold">{displayName}</h1>
+                <div className="flex items-center gap-2">
+                  <h1 className="text-xl font-bold">{displayName}</h1>
+                  {!pointsLoading && userPoints > 0 && (
+                    <Badge className="bg-green-600 hover:bg-green-700 flex items-center gap-1 text-white">
+                      <Trophy className="h-3 w-3" />
+                      <span>{userPoints} Points</span>
+                    </Badge>
+                  )}
+                </div>
                 <p className="text-sm text-gray-500 dark:text-gray-400">
                   {formatAddress(userId)}
                 </p>
@@ -207,6 +219,15 @@ export default function Profile() {
                         <p className="text-sm font-medium">Comments</p>
                         <p className="text-lg font-semibold">0</p>
                       </div>
+                      
+                      {!pointsLoading && (
+                        <div>
+                          <p className="text-sm font-medium flex items-center gap-1">
+                            <Award className="h-3 w-3" /> Points
+                          </p>
+                          <p className="text-lg font-semibold text-green-600">{userPoints}</p>
+                        </div>
+                      )}
                     </div>
                   </div>
                 ) : (

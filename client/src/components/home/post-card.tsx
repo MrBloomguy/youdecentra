@@ -1,10 +1,15 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
+import { Badge } from '@/components/ui/badge';
 import { formatTimeAgo, getCommunityColor, getCommunityInitial, isImageUrl } from '@/lib/utils';
 import { AppPost } from '@shared/types';
 import { useOrbis } from '@/lib/orbis';
 import { useAuthStore, usePostStore, useUIStore } from '@/lib/store';
+import { SharePostDialog } from '@/components/post/share-post-dialog';
+import { Award, Share2, Bookmark } from 'lucide-react';
+import { usePostPoints, pointsService } from '@/lib/points';
+import { usePrivy } from '@privy-io/react-auth';
 
 interface PostCardProps {
   post: AppPost;
@@ -15,6 +20,9 @@ export default function PostCard({ post }: PostCardProps) {
   const { isAuthenticated } = useAuthStore();
   const { updatePostVote } = usePostStore();
   const { setAuthModalOpen } = useUIStore();
+  const { user } = usePrivy();
+  const { points: postPoints, loading: pointsLoading } = usePostPoints(post.id);
+  const [shareDialogOpen, setShareDialogOpen] = useState(false);
   
   const handleVote = async (type: 'up' | 'down') => {
     if (!isAuthenticated) {
@@ -28,15 +36,33 @@ export default function PostCard({ post }: PostCardProps) {
     // If user is clicking the same vote they already have, remove the vote
     if (post.userVote === type) {
       // Handle UI update optimistically
-      updatePostVote(post.id, null, previousVote);
+      updatePostVote(post.id, null, previousVote || null);
       // Remove vote through Orbis (implementation depends on Orbis SDK capability)
       await votePost(post.id, type === 'up' ? 'upvote' : 'downvote');
     } else {
       // Handle UI update optimistically
-      updatePostVote(post.id, type, previousVote);
+      updatePostVote(post.id, type, previousVote || null);
       // Submit vote through Orbis
       await votePost(post.id, type === 'up' ? 'upvote' : 'downvote');
+      
+      // Award points for liking if user is authenticated and has wallet
+      if (user?.wallet?.address) {
+        try {
+          await pointsService.awardPointsForLike(
+            user.wallet.address, 
+            post.id,
+            1 // Default points for liking
+          );
+        } catch (error) {
+          console.error('Error awarding points for like:', error);
+        }
+      }
     }
+  };
+  
+  // Handle share button click
+  const handleShare = () => {
+    setShareDialogOpen(true);
   };
   
   // Check if post has media to display
@@ -114,6 +140,16 @@ export default function PostCard({ post }: PostCardProps) {
             </div>
           )}
 
+          {/* Post points badge */}
+          {!pointsLoading && postPoints > 0 && (
+            <div className="mb-3">
+              <Badge className="bg-green-600 hover:bg-green-700 flex items-center gap-1 text-white">
+                <Award className="h-3 w-3" />
+                <span>{postPoints} Points</span>
+              </Badge>
+            </div>
+          )}
+          
           {/* Post actions */}
           <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
             <Button
@@ -132,8 +168,9 @@ export default function PostCard({ post }: PostCardProps) {
               variant="ghost"
               size="sm"
               className="flex items-center hover:bg-gray-100 dark:hover:bg-gray-800 p-1.5 rounded-md ml-2 h-auto"
+              onClick={handleShare}
             >
-              <i className="ri-share-forward-line mr-1"></i>
+              <Share2 className="h-4 w-4 mr-1" />
               <span>Share</span>
             </Button>
             
@@ -142,12 +179,19 @@ export default function PostCard({ post }: PostCardProps) {
               size="sm"
               className="flex items-center hover:bg-gray-100 dark:hover:bg-gray-800 p-1.5 rounded-md ml-2 h-auto"
             >
-              <i className="ri-bookmark-line mr-1"></i>
+              <Bookmark className="h-4 w-4 mr-1" />
               <span>Save</span>
             </Button>
           </div>
         </div>
       </div>
+      
+      {/* Share Post Dialog */}
+      <SharePostDialog 
+        post={post} 
+        open={shareDialogOpen} 
+        onOpenChange={setShareDialogOpen} 
+      />
     </div>
   );
 }
