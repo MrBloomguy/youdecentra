@@ -1,0 +1,104 @@
+nMessage in parent:  MessageEvent {isTrusted: true, data: {…}, origin: 'https://auth.privy.io', lastEventId: '', source: global, …}
+initial.C2_9bW8S.js:1016 Uncaught (in promise) Error: Access to storage is not allowed from this context.Understand this errorAI
+@orbisclub_orbis-sdk.js?v=34be4880:64546 onMessage in parent:  MessageEvent {isTrusted: true, data: {…}, origin: 'https://auth.privy.io', lastEventId: '', source: global, …}
+@orbisclub_orbis-sdk.js?v=34be4880:64546 onMessage in parent:  MessageEvent {isTrusted: true, data: {…}, origin: 'https://auth.privy.io', lastEventId: '', source: global, …}
+@orbisclub_orbis-sdk.js?v=34be4880:64546 onMessage in parent:  MessageEvent {isTrusted: true, data: {…}, origin: 'https://auth.privy.io', lastEventId: '', source: global, …}
+@orbisclub_orbis-sdk.js?v=34be4880:64546 onMessage in parent:  MessageEvent {isTrusted: true, data: {…}, origin: 'https://auth.privy.io', lastEventId: '', source: global, …}
+@orbisclub_orbis-sdk.js?v=34be4880:64546 onMessage in parent:  MessageEvent {isTrusted: true, data: {…}, origin: 'https://auth.privy.io', lastEventId: '', source: global, …}
+orbis.ts:246 Failed to fetch posts: Error: Request timed out after 15 seconds
+    at orbis.ts:193:20
+getPosts @ orbis.ts:246
+await in getPosts
+fetchPosts @ feed.tsx:29
+(anonymous) @ feed.tsx:53
+commitHookEffectListMount @ chunk-SM3OW2QE.js?v=34be4880:16915
+commitPassiveMountOnFiber @ chunk-SM3OW2QE.js?v=34be4880:18156
+commitPassiveMountEffects_complete @ chunk-SM3OW2QE.js?v=34be4880:18129
+commitPassiveMountEffects_begin @ chunk-SM3OW2QE.js?v=34be4880:18119
+commitPassiveMountEffects @ chunk-SM3OW2QE.js?v=34be4880:18109
+flushPassiveEffectsImpl @ chunk-SM3OW2QE.js?v=34be4880:19490
+flushPassiveEffects @ chunk-SM3OW2QE.js?v=34be4880:19447
+performSyncWorkOnRoot @ chunk-SM3OW2QE.js?v=34be4880:18868
+flushSyncCallbacks @ chunk-SM3OW2QE.js?v=34be4880:9119
+commitRootImpl @ chunk-SM3OW2QE.js?v=34be4880:19432
+commitRoot @ chunk-SM3OW2QE.js?v=34be4880:19277
+finishConcurrentRender @ chunk-SM3OW2QE.js?v=34be4880:18805
+performConcurrentWorkOnRoot @ chunk-SM3OW2QE.js?v=34be4880:18718
+workLoop @ chunk-SM3OW2QE.js?v=34be4880:197
+flushWork @ chunk-SM3OW2QE.js?v=34be4880:176
+performWorkUntilDeadline @ chunk-SM3OW2QE.js?v=34be4880:384Understand this errorAI
+orbis.ts:246 Failed to fetch posts: Error: Request timed out after 15 seconds
+    at orbis.ts:193:20
+getPosts @ orbis.ts:246
+await in getPosts
+fetchPosts @ feed.tsx:29
+(anonymous) @ feed.tsx:53
+commitHookEffectListMount @ chunk-SM3OW2QE.js?v=34be4880:16915
+commitPassiveMountOnFiber @ chunk-SM3OW2QE.js?v=34be4880:18156
+commitPassiveMountEffects_complete @ chunk-SM3OW2QE.js?v=34be4880:18129
+commitPassiveMountEffects_begin @ chunk-SM3OW2QE.js?v=34be4880:18119
+commitPassiveMountEffects @ chunk-SM3OW2QE.js?v=34be4880:18109
+flushPassiveEffectsImpl @ chunk-SM3OW2QE.js?v=34be4880:19490
+flushPassiveEffects @ chunk-SM3OW2QE.js?v=34be4880:19447
+commitRootImpl @ chunk-SM3OW2QE.js?v=34be4880:19416
+commitRoot @ chunk-SM3OW2QE.js?v=34be4880:19277
+performSyncWorkOnRoot @ chunk-SM3OW2QE.js?v=34be4880:18895
+flushSyncCallbacks @ chunk-SM3OW2QE.js?v=34be4880:9119
+commitRootImpl @ chunk-SM3OW2QE.js?v=34be4880:19432
+commitRoot @ chunk-SM3OW2QE.js?v=34be4880:19277
+finishConcurrentRender @ chunk-SM3OW2QE.js?v=34be4880:18805
+performConcurrentWorkOnRoot @ chunk-SM3OW2QE.js?v=34be4880:18718
+workLoop @ chunk-SM3OW2QE.js?v=34be4880:197
+flushWork @ chunk-SM3OW2QE.js?v=34be4880:176
+performWorkUntilDeadline @ chunk-SM3OW2QE.js?v=34be4880:384Understand this errorAI
+orbis.ts:246 Failed to fetch posts: Error: Request timed out after 15 seconds
+    at orbis.ts:193:20
+getPosts @ orbis.ts:246
+await in getPosts
+fetchPosts @ feed.tsx:29
+(anonymous) @ feed.tsx:53
+commitHookEffectListMount @ chunk-SM3OW2QE.js?v=34be4880:16915
+commitPassiveMountOnFiber @ chunk-SM3OW2QE.js?v=34be4880:18156
+commitPassiveMountEffects_complete @ chunk-SM3OW2QE.js?v=34be4880:18129
+commitPassiveMountEffects_begin @ chunk-SM3OW2QE.js?v=34be4880:18119
+commitPassiveMountEffects @ chunk-SM3OW2QE.js?v=34be4880:18109
+flushPassiveEffectsImpl @ chunk-SM3OW2QE.js?v=34be4880:19490
+flushPassiveEffects @ chunk-SM3OW2QE.js?v=34be4880:19447
+performSyncWorkOnRoot @ chunk-SM3OW2QE.js?v=34be4880:18868
+flushSyncCallbacks @ chunk-SM3OW2QE.js?v=34be4880:9119
+commitRootImpl @ chunk-SM3OW2QE.js?v=34be4880:19432
+commitRoot @ chunk-SM3OW2QE.js?v=34be4880:19277
+finishConcurrentRender @ chunk-SM3OW2QE.js?v=34be4880:18805
+performConcurrentWorkOnRoot @ chunk-SM3OW2QE.js?v=34be4880:18718
+workLoop @ chunk-SM3OW2QE.js?v=34be4880:197
+flushWork @ chunk-SM3OW2QE.js?v=34be4880:176
+performWorkUntilDeadline @ chunk-SM3OW2QE.js?v=34be4880:384Understand this errorAI
+@orbisclub_orbis-sdk.js?v=34be4880:114386 
+            
+            
+           GET https://ylgfjdlgyjmdikqavpcj.supabase.co/rest/v1/orbis_v_profiles?select=*&did=ilike.did%3Aprivy%3Acm92u3cl8009llk0l6k01jflq 406 (Not Acceptable)
+PostgrestBuilder.fetch @ @orbisclub_orbis-sdk.js?v=34be4880:114386
+PostgrestBuilder.fetch @ @orbisclub_orbis-sdk.js?v=34be4880:114386
+then @ @orbisclub_orbis-sdk.js?v=34be4880:114413Understand this errorAI
+orbis.ts:343 Error fetching profile: {code: 'PGRST116', details: 'Results contain 0 rows, application/vnd.pgrst.object+json requires 1 row', hint: null, message: 'JSON object requested, multiple (or no) rows returned'}
+getProfile @ orbis.ts:343
+await in getProfile
+fetchProfile @ profile.tsx:54
+(anonymous) @ profile.tsx:72
+commitHookEffectListMount @ chunk-SM3OW2QE.js?v=34be4880:16915
+commitPassiveMountOnFiber @ chunk-SM3OW2QE.js?v=34be4880:18156
+commitPassiveMountEffects_complete @ chunk-SM3OW2QE.js?v=34be4880:18129
+commitPassiveMountEffects_begin @ chunk-SM3OW2QE.js?v=34be4880:18119
+commitPassiveMountEffects @ chunk-SM3OW2QE.js?v=34be4880:18109
+flushPassiveEffectsImpl @ chunk-SM3OW2QE.js?v=34be4880:19490
+flushPassiveEffects @ chunk-SM3OW2QE.js?v=34be4880:19447
+performSyncWorkOnRoot @ chunk-SM3OW2QE.js?v=34be4880:18868
+flushSyncCallbacks @ chunk-SM3OW2QE.js?v=34be4880:9119
+commitRootImpl @ chunk-SM3OW2QE.js?v=34be4880:19432
+commitRoot @ chunk-SM3OW2QE.js?v=34be4880:19277
+finishConcurrentRender @ chunk-SM3OW2QE.js?v=34be4880:18805
+performConcurrentWorkOnRoot @ chunk-SM3OW2QE.js?v=34be4880:18718
+workLoop @ chunk-SM3OW2QE.js?v=34be4880:197
+flushWork @ chunk-SM3OW2QE.js?v=34be4880:176
+performWorkUntilDeadline @ chunk-SM3OW2QE.js?v=34be4880:384Understand this errorAI
+profile.tsx:56 No profile data available
