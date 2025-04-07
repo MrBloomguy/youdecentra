@@ -16,7 +16,7 @@ import { getCommunityColor, formatTimeAgo } from '@/lib/utils';
 import { AppPost } from '@shared/types';
 
 export default function Community() {
-  const [, params] = useRoute<{ id: string }>('/w/:id');
+  const [, params] = useRoute<{ id: string }>('/community/:id');
   const communityName = params?.id || '';
   const { communities } = useCommunityStore();
   const { getPosts } = useOrbis();
@@ -57,7 +57,7 @@ export default function Community() {
         <main className="container mx-auto px-2 md:px-4 py-4">
           <div className="bg-reddit-light-brighter dark:bg-reddit-dark-brighter rounded-md p-6 text-center border border-reddit-light-border dark:border-reddit-dark-border">
             <h2 className="text-xl font-semibold mb-2">Community Not Found</h2>
-            <p className="text-gray-500 dark:text-gray-400 mb-4">The community w/{communityName} doesn't exist or isn't available.</p>
+            <p className="text-gray-500 dark:text-gray-400 mb-4">The community {communityName} doesn't exist or isn't available.</p>
             <Button className="bg-reddit-orange hover:bg-orange-600 text-white">
               Create this Community
             </Button>
@@ -92,7 +92,7 @@ export default function Community() {
           </div>
           
           <div className="ml-4">
-            <h1 className="text-xl font-bold">w/{community.name}</h1>
+            <h1 className="text-xl font-bold">{community.name}</h1>
             <p className="text-sm text-gray-500 dark:text-gray-400">{community.memberCount} members</p>
           </div>
           
@@ -108,7 +108,7 @@ export default function Community() {
         <div className="col-span-1 md:col-span-2 lg:col-span-2 space-y-4">
           {/* Community description */}
           <div className="bg-reddit-light-brighter dark:bg-reddit-dark-brighter rounded-md p-4 border border-reddit-light-border dark:border-reddit-dark-border">
-            <h2 className="font-semibold mb-2">About w/{community.name}</h2>
+            <h2 className="font-semibold mb-2">About {community.name}</h2>
             <p className="text-sm mb-2">{community.description || `Welcome to the ${community.name} community!`}</p>
             <div className="text-xs text-gray-500 dark:text-gray-400 flex items-center">
               <i className="ri-calendar-line mr-1"></i>
@@ -123,7 +123,7 @@ export default function Community() {
             </div>
             <input 
               type="text" 
-              placeholder={`Create a post in w/${community.name}`}
+              placeholder={`Create a post in ${community.name}`}
               className="bg-gray-100 dark:bg-gray-800 rounded-md py-2 px-4 text-sm flex-grow focus:outline-none focus:ring-1 focus:ring-reddit-blue"
               readOnly
               onClick={() => {
@@ -158,7 +158,7 @@ export default function Community() {
             ) : (
               <div className="bg-reddit-light-brighter dark:bg-reddit-dark-brighter rounded-md p-6 text-center border border-reddit-light-border dark:border-reddit-dark-border">
                 <p className="text-lg font-semibold mb-2">No posts yet</p>
-                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Be the first to create a post in w/{community.name}!</p>
+                <p className="text-sm text-gray-500 dark:text-gray-400 mb-4">Be the first to create a post in {community.name}!</p>
                 <Button 
                   className="bg-reddit-orange hover:bg-orange-600 text-white font-semibold py-1.5 px-4 rounded-full text-sm"
                   onClick={() => {

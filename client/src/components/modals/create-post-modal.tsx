@@ -107,15 +107,6 @@ export default function CreatePostModal() {
       return;
     }
     
-    if (!selectedCommunity) {
-      toast({
-        title: 'Community required',
-        description: 'Please select a community to post in.',
-        variant: 'destructive',
-      });
-      return;
-    }
-    
     if (!title.trim()) {
       toast({
         title: 'Title required',
@@ -144,26 +135,40 @@ export default function CreatePostModal() {
         }
       }
       
-      // Find the selected community
-      const community = communities.find(c => c.name === selectedCommunity);
+      // Create post using Orbis - with or without community context
+      let orbisPostId;
+      let community = null;
       
-      if (!community) {
-        toast({
-          title: 'Community not found',
-          description: 'The selected community could not be found.',
-          variant: 'destructive',
-        });
-        setIsSubmitting(false);
-        return;
+      if (selectedCommunity) {
+        // Find the selected community
+        community = communities.find(c => c.name === selectedCommunity);
+        
+        if (community) {
+          // Create post in specific community
+          orbisPostId = await createPost(
+            title,
+            content,
+            mediaUrls,
+            community.orbisContext || community.name
+          );
+        } else {
+          toast({
+            title: 'Community not found',
+            description: 'The selected community could not be found.',
+            variant: 'destructive',
+          });
+          setIsSubmitting(false);
+          return;
+        }
+      } else {
+        // Create post without community (global feed)
+        orbisPostId = await createPost(
+          title,
+          content,
+          mediaUrls,
+          ""  // Empty context for global feed
+        );
       }
-      
-      // Create post using Orbis
-      const orbisPostId = await createPost(
-        title,
-        content,
-        mediaUrls,
-        community.orbisContext || community.name
-      );
       
       if (!orbisPostId) {
         toast({
@@ -180,10 +185,14 @@ export default function CreatePostModal() {
         id: orbisPostId,
         title,
         content,
-        community: {
+        community: community ? {
           id: community.id,
           name: community.name,
           avatar: community.avatar,
+        } : {
+          id: '0',
+          name: 'General',
+          avatar: '',
         },
         author: {
           id: user.id,
@@ -232,10 +241,10 @@ export default function CreatePostModal() {
         <div className="space-y-4">
           {/* Community Selector */}
           <div>
-            <label className="block text-sm font-medium mb-1">Choose a community</label>
+            <label className="block text-sm font-medium mb-1">Choose a community (optional)</label>
             <Select value={selectedCommunity} onValueChange={handleCommunityChange}>
               <SelectTrigger className="w-full bg-gray-100 dark:bg-gray-800 rounded-md">
-                <SelectValue placeholder="Select a community" />
+                <SelectValue placeholder="Global feed (no community)" />
               </SelectTrigger>
               <SelectContent>
                 {communities.map((community) => (
@@ -246,7 +255,7 @@ export default function CreatePostModal() {
                           {getCommunityInitial(community.name)}
                         </span>
                       </div>
-                      <span>w/{community.name}</span>
+                      <span>{community.name}</span>
                     </div>
                   </SelectItem>
                 ))}
@@ -334,7 +343,7 @@ export default function CreatePostModal() {
           </Button>
           <Button
             onClick={handleSubmit}
-            disabled={isSubmitting || !title.trim() || !selectedCommunity}
+            disabled={isSubmitting || !title.trim()}
             className="bg-reddit-orange hover:bg-orange-600 text-white"
           >
             {isSubmitting ? (

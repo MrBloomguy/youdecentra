@@ -59,7 +59,7 @@ export default function InfoSidebar() {
           {popularCommunities.map((community) => (
             <li key={community.id}>
               <Link 
-                href={`/w/${community.name}`} 
+                href={`/community/${community.name}`} 
                 className="flex items-center justify-between py-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded px-1"
               >
                 <div className="flex items-center">
@@ -68,7 +68,7 @@ export default function InfoSidebar() {
                       {getCommunityInitial(community.name)}
                     </span>
                   </div>
-                  <span className="font-medium text-sm">w/{community.name}</span>
+                  <span className="font-medium text-sm">{community.name}</span>
                 </div>
                 <Button 
                   size="sm"

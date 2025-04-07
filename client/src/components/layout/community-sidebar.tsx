@@ -19,13 +19,13 @@ export default function CommunitySidebar() {
         <ul className="space-y-2">
           {communities.map((community) => (
             <li key={community.id}>
-              <Link href={`/w/${community.name}`} className="flex items-center py-1 px-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded">
+              <Link href={`/community/${community.name}`} className="flex items-center py-1 px-2 hover:bg-gray-100 dark:hover:bg-gray-800 rounded">
                 <div className={`w-6 h-6 rounded-full overflow-hidden ${getCommunityColor(community.name)} mr-2 flex-shrink-0`}>
                   <span className="text-white text-xs font-bold flex items-center justify-center h-full">
                     {getCommunityInitial(community.name)}
                   </span>
                 </div>
-                <span className="font-medium text-sm">w/{community.name}</span>
+                <span className="font-medium text-sm">{community.name}</span>
               </Link>
             </li>
           ))}

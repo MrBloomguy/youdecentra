@@ -16,7 +16,7 @@ function Router() {
   return (
     <Switch>
       <Route path="/" component={Home} />
-      <Route path="/w/:id" component={Community} />
+      <Route path="/community/:id" component={Community} />
       <Route path="/post/:id" component={PostDetail} />
       <Route path="/user/:id" component={Profile} />
       <Route component={NotFound} />

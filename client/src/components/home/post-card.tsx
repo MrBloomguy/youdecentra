@@ -97,7 +97,7 @@ export default function PostCard({ post }: PostCardProps) {
         <div className="flex-grow p-2 md:p-3">
           {/* Post header */}
           <div className="flex items-center text-xs text-gray-500 dark:text-gray-400 mb-2">
-            <Link href={`/w/${post.community.name}`} className="flex items-center hover:underline">
+            <Link href={`/community/${post.community.name}`} className="flex items-center hover:underline">
               <div className={`w-5 h-5 rounded-full ${getCommunityColor(post.community.name)} mr-1 flex-shrink-0`}>
                 <span className="text-white text-xs font-bold flex items-center justify-center h-full">
                   {getCommunityInitial(post.community.name)}
