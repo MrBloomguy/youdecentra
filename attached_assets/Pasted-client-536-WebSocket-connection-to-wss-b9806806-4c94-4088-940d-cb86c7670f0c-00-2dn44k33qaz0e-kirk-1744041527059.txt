@@ -1,0 +1,22 @@
+client:536 WebSocket connection to 'wss://b9806806-4c94-4088-940d-cb86c7670f0c-00-2dn44k33qaz0e.kirk.replit.dev/?token=nBjau5nqt24E' failed: 
+setupWebSocket @ client:536Understand this errorAI
+3b9806806-4c94-4088-9….kirk.replit.dev/:1 Uncaught (in promise) Error: Access to storage is not allowed from this context.Understand this errorAI
+initial.C2_9bW8S.js:1016 Uncaught (in promise) Error: Access to storage is not allowed from this context.Understand this errorAI
+client:536 Uncaught (in promise) SyntaxError: Failed to construct 'WebSocket': The URL 'wss://localhost:undefined/?token=nBjau5nqt24E' is invalid.
+    at setupWebSocket (client:536:19)
+    at fallback (client:509:16)
+    at WebSocket.<anonymous> (client:555:7)Understand this errorAI
+chunk-SM3OW2QE.js?v=3178c943:21551 Download the React DevTools for a better development experience: https://reactjs.org/link/react-devtools
+chunk-GD7PDYI2.js?v=3178c943:727 Module "buffer" has been externalized for browser compatibility. Cannot access "buffer.Buffer" in client code. See https://vite.dev/guide/troubleshooting.html#module-externalized-for-browser-compatibility for more details.
+get @ chunk-GD7PDYI2.js?v=3178c943:727Understand this warningAI
+@orbisclub_orbis-sdk.js?v=94d08fcf:50393 Uncaught ReferenceError: global is not defined
+    at node_modules/@walletconnect/socket-transport/dist/esm/index.js (@orbisclub_orbis-sdk.js?v=94d08fcf:50393:5)
+    at __init (chunk-256EKJAK.js?v=3178c943:18:56)
+    at node_modules/@walletconnect/core/dist/esm/index.js (@orbisclub_orbis-sdk.js?v=94d08fcf:50693:5)
+    at __init (chunk-256EKJAK.js?v=3178c943:18:56)
+    at node_modules/@walletconnect/client/dist/esm/index.js (@orbisclub_orbis-sdk.js?v=94d08fcf:52062:5)
+    at __init (chunk-256EKJAK.js?v=3178c943:18:56)
+    at node_modules/@walletconnect/signer-connection/dist/esm/index.js (@orbisclub_orbis-sdk.js?v=94d08fcf:57281:5)
+    at __init (chunk-256EKJAK.js?v=3178c943:18:56)
+    at node_modules/@walletconnect/ethereum-provider/dist/esm/index.js (@orbisclub_orbis-sdk.js?v=94d08fcf:57476:5)
+    at __init (chunk-256EKJAK.js?v=3178c943:18:56)

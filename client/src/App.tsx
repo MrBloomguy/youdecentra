@@ -9,6 +9,7 @@ import { usePrivy } from "@privy-io/react-auth";
 import { useEffect } from "react";
 import { useCommunityStore, useThemeStore, useAuthStore } from "./lib/store";
 import { OrbisContextProvider } from "./lib/orbis";
+import { webSocketClient } from "./lib/websocket";
 
 function Router() {
   return (
@@ -33,6 +34,15 @@ function App() {
     initializeCommunities();
   }, [initializeCommunities]);
   
+  // Connect to WebSocket for real-time updates
+  useEffect(() => {
+    webSocketClient.connect();
+    
+    return () => {
+      webSocketClient.disconnect();
+    };
+  }, []);
+  
   // Set theme on initial load
   useEffect(() => {
     document.documentElement.classList.toggle("dark", isDarkMode);
@@ -53,10 +63,30 @@ function App() {
     }
   }, [ready, authenticated, user, setUser, setIsAuthenticated]);
 
+  // Debug function for development
+  const debugWebSocket = () => {
+    console.log('Debugging WebSocket connection...');
+    webSocketClient.debugConnectionState();
+    webSocketClient.ping();
+  };
+
   return (
     <OrbisContextProvider>
       <Router />
       <Toaster />
+      {process.env.NODE_ENV !== 'production' && (
+        <div 
+          style={{ 
+            position: 'fixed', 
+            bottom: '10px', 
+            right: '10px', 
+            zIndex: 9999,
+            display: 'none' // Hide in UI but keep for console access
+          }}
+        >
+          <button onClick={debugWebSocket}>Debug WebSocket</button>
+        </div>
+      )}
     </OrbisContextProvider>
   );
 }

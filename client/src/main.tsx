@@ -1,3 +1,21 @@
+// Polyfills for web3 libraries
+import { Buffer } from 'buffer';
+
+// Comprehensive polyfills for web3 libraries
+window.global = window;
+window.Buffer = Buffer;
+
+// Additional polyfills for WalletConnect and other libraries
+if (typeof global === 'undefined') {
+  (window as any).global = window;
+}
+if (typeof process === 'undefined') {
+  (window as any).process = { env: {} };
+}
+
+// Add additional Node.js specific globals that might be needed
+(window as any).globalThis = window;
+
 import { createRoot } from "react-dom/client";
 import App from "./App";
 import "./index.css";

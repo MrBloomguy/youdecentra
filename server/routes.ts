@@ -2,7 +2,7 @@ import type { Express } from "express";
 import { createServer, type Server } from "http";
 import { storage } from "./storage";
 import { insertUserSchema, insertCommunitySchema, insertPostSchema } from "@shared/schema";
-import { WebSocketServer } from "ws";
+import { WebSocketServer, WebSocket } from "ws";
 
 export async function registerRoutes(app: Express): Promise<Server> {
   const httpServer = createServer(app);
@@ -10,14 +10,45 @@ export async function registerRoutes(app: Express): Promise<Server> {
   // Set up WebSocket server for real-time updates
   const wss = new WebSocketServer({ 
     server: httpServer,
-    path: '/ws'
+    path: '/ws',
+    // Allow connections from any origin
+    verifyClient: (info: { origin: string; secure: boolean; req: any }) => {
+      console.log('WebSocket connection attempt from:', info.origin);
+      return true; // Accept all connections
+    }
   });
 
-  wss.on('connection', (ws) => {
-    console.log('WebSocket client connected');
+  // Track connected clients
+  const clients = new Set();
+
+  wss.on('connection', (ws, req) => {
+    console.log(`WebSocket client connected from ${req.socket.remoteAddress}`);
+    clients.add(ws);
+    
+    // Send initial connection message
+    ws.send(JSON.stringify({
+      type: 'connection_established',
+      data: {
+        timestamp: new Date().toISOString(),
+        message: 'Connected to web3-reddit WebSocket server'
+      }
+    }));
     
     ws.on('message', (message) => {
-      console.log('Received message:', message.toString());
+      try {
+        console.log('Received message:', message.toString());
+        const parsed = JSON.parse(message.toString());
+        
+        // Handle different message types
+        if (parsed.type === 'ping') {
+          ws.send(JSON.stringify({
+            type: 'pong',
+            data: { timestamp: new Date().toISOString() }
+          }));
+        }
+      } catch (error) {
+        console.error('Error processing WebSocket message:', error);
+      }
     });
     
     ws.on('error', (error) => {
@@ -26,8 +57,18 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     ws.on('close', () => {
       console.log('WebSocket client disconnected');
+      clients.delete(ws);
     });
   });
+  
+  // Broadcast function for sending messages to all clients
+  const broadcast = (message: { type: string; data: any }) => {
+    wss.clients.forEach((client) => {
+      if (client.readyState === WebSocket.OPEN) {
+        client.send(JSON.stringify(message));
+      }
+    });
+  };
 
   // Users endpoints
   app.post('/api/users', async (req, res) => {
