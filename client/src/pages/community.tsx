@@ -54,7 +54,6 @@ export default function Community() {
   if (!community) {
     return (
       <>
-        <Navbar />
         <main className="container mx-auto px-2 md:px-4 py-4">
           <div className="bg-reddit-light-brighter dark:bg-reddit-dark-brighter rounded-md p-6 text-center border border-reddit-light-border dark:border-reddit-dark-border">
             <h2 className="text-xl font-semibold mb-2">Community Not Found</h2>
@@ -71,7 +70,6 @@ export default function Community() {
   
   return (
     <>
-      <Navbar />
       
       {/* Community header/banner */}
       <div className="bg-reddit-light-brighter dark:bg-reddit-dark-brighter border-b border-reddit-light-border dark:border-reddit-dark-border">

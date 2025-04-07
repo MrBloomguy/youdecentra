@@ -77,7 +77,6 @@ export default function Profile() {
 
   return (
     <>
-      <Navbar />
       
       <main className="container mx-auto px-2 md:px-4 py-4 pb-16 md:pb-4">
         <div className="max-w-4xl mx-auto">

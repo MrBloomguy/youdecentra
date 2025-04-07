@@ -23,8 +23,6 @@ export default function Home() {
   
   return (
     <>
-      <Navbar />
-      
       <main className="container mx-auto px-2 md:px-4 py-4 grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-4 pb-16 md:pb-4">
         <CommunitySidebar />
         <Feed />

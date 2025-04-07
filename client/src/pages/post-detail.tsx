@@ -150,7 +150,6 @@ export default function PostDetail() {
   
   return (
     <>
-      <Navbar />
       
       <main className="container mx-auto px-2 md:px-4 py-4 pb-16 md:pb-4">
         {isLoading ? (
