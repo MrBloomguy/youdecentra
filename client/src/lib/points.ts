@@ -21,7 +21,8 @@ const POINTS_CONTRACT_ABI = [
 ];
 
 // Contract address on Optimism Sepolia
-const POINTS_CONTRACT_ADDRESS = "0x7d22772c139aada1a5112ea7553a4ccfc46930d0";
+const POINTS_CONTRACT_ADDRESS = "0x7d22772c139aada1a5112ea7553a4ccfc46930d0"; // TODO: Update with correct deployed contract address
+const MOCK_MODE = true; // Enable mock data while contract is unavailable
 
 // Network details for Optimism Sepolia
 const OPTIMISM_SEPOLIA_CONFIG = {
@@ -88,6 +89,11 @@ export class PointsService {
    */
   public async getUserPoints(userAddress: string): Promise<number> {
     try {
+      if (MOCK_MODE) {
+        // Return mock data based on address hash
+        return parseInt(userAddress.slice(-4), 16) % 1000;
+      }
+      
       if (!this.contract) {
         throw new Error('Contract not initialized');
       }
@@ -126,6 +132,11 @@ export class PointsService {
    */
   public async getUserDonationPoints(userAddress: string): Promise<number> {
     try {
+      if (MOCK_MODE) {
+        // Return mock data based on address hash
+        return parseInt(userAddress.slice(-6), 16) % 500;
+      }
+
       if (!this.contract) {
         throw new Error('Contract not initialized');
       }
@@ -144,6 +155,11 @@ export class PointsService {
    */
   public async getUserRank(userAddress: string): Promise<number> {
     try {
+      if (MOCK_MODE) {
+        // Return mock data based on address hash
+        return parseInt(userAddress.slice(-3), 16) % 100 + 1;
+      }
+
       if (!this.contract) {
         throw new Error('Contract not initialized');
       }
