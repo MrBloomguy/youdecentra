@@ -172,38 +172,76 @@ export default function Profile() {
 
                 <div className="flex mt-4">
                   {isOwnProfile ? (
-                    <Button 
-                      variant="outline" 
-                      className="text-sm"
-                      onClick={async () => {
-                        const newUsername = prompt('Enter new username:');
-                        if (newUsername && orbis) {
-                          try {
-                            const res = await orbis.updateProfile({
-                              username: newUsername,
-                              description: profile?.details?.profile?.description
-                            });
-                            if (res.status === 200) {
-                              toast({
-                                title: "Profile updated",
-                                description: "Your profile has been updated successfully"
+                    <Dialog>
+                      <DialogTrigger asChild>
+                        <Button variant="outline" className="text-sm">
+                          Edit Profile
+                        </Button>
+                      </DialogTrigger>
+                      <DialogContent>
+                        <DialogHeader>
+                          <DialogTitle>Edit Profile</DialogTitle>
+                          <DialogDescription>
+                            Make changes to your profile here
+                          </DialogDescription>
+                        </DialogHeader>
+                        <form onSubmit={async (e) => {
+                          e.preventDefault();
+                          const form = e.target as HTMLFormElement;
+                          const username = (form.elements.namedItem('username') as HTMLInputElement).value;
+                          const description = (form.elements.namedItem('description') as HTMLTextAreaElement).value;
+
+                          if (username && orbis) {
+                            try {
+                              const res = await orbis.updateProfile({
+                                username,
+                                description,
+                                pfp: profile?.details?.profile?.pfp
                               });
-                              // Refresh profile data
-                              const updatedProfile = await getProfile(userId);
-                              setProfile(updatedProfile);
+
+                              if (res.status === 200) {
+                                toast({
+                                  title: "Profile updated",
+                                  description: "Your profile has been updated successfully"
+                                });
+                                // Refresh profile data
+                                const updatedProfile = await getProfile(userId);
+                                setProfile(updatedProfile);
+                                form.reset();
+                              }
+                            } catch (error) {
+                              toast({
+                                title: "Error",
+                                description: "Failed to update profile",
+                                variant: "destructive"
+                              });
                             }
-                          } catch (error) {
-                            toast({
-                              title: "Error",
-                              description: "Failed to update profile",
-                              variant: "destructive"
-                            });
                           }
-                        }
-                      }}
-                    >
-                      Edit Profile
-                    </Button>
+                        }}>
+                          <div className="space-y-4 py-4">
+                            <div className="space-y-2">
+                              <Label htmlFor="username">Username</Label>
+                              <Input
+                                id="username"
+                                name="username"
+                                defaultValue={profile?.details?.profile?.username}
+                              />
+                            </div>
+                            <div className="space-y-2">
+                              <Label htmlFor="description">Description</Label>
+                              <Textarea
+                                id="description"
+                                name="description"
+                                defaultValue={profile?.details?.profile?.description}
+                              />
+                            </div>
+                          </div>
+                          <DialogFooter>
+                            <Button type="submit">Save Changes</Button>
+                          </DialogFooter>
+                        </form>
+                      </DialogContent>
+                    </Dialog>
                   ) : (
                     <Button className="bg-reddit-blue hover:bg-blue-600 text-white text-sm">
                       Follow
