@@ -1,38 +1,56 @@
 import React from 'react';
-import { Link, useLocation } from 'wouter';
+import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
-import { useCommunityStore, useUIStore } from '@/lib/store';
-import { getCommunityColor, getCommunityInitial } from '@/lib/utils';
+import { usePostStore, useUIStore } from '@/lib/store';
+import { formatTimeAgo } from '@/lib/utils';
 
 export default function InfoSidebar() {
-  const [location] = useLocation();
-  const { communities } = useCommunityStore();
+  const { posts } = usePostStore();
   const { setCreatePostModalOpen, setCreateCommunityModalOpen } = useUIStore();
-  
-  // Get just a few communities for the popular section
-  const popularCommunities = communities.slice(0, 3);
-  
+
+  // Get the 3 most recent posts
+  const recentPosts = posts
+    .sort((a, b) => b.createdAt - a.createdAt)
+    .slice(0, 3);
+
   return (
     <aside className="hidden lg:block lg:col-span-1 space-y-4">
-      {/* Current Community */}
+      {/* Recent Posts */}
       <div className="bg-reddit-light-brighter dark:bg-reddit-dark-brighter rounded-md overflow-hidden border border-reddit-light-border dark:border-reddit-dark-border">
         <div className="h-16 bg-gradient-to-r from-blue-400 to-purple-500"></div>
         <div className="p-4">
-          <h2 className="font-bold text-base">Home</h2>
-          <p className="text-sm mt-2 mb-4">Your personalized RedditWeb3 homepage. Come here to check in with your favorite communities.</p>
-          <Button 
-            onClick={() => setCreatePostModalOpen(true)}
-            className="w-full bg-reddit-orange hover:bg-orange-600 text-white font-semibold py-1.5 px-4 rounded-full text-sm mb-2"
-          >
-            Create Post
-          </Button>
-          <Button 
-            onClick={() => setCreateCommunityModalOpen(true)}
-            variant="outline"
-            className="w-full border border-reddit-blue text-reddit-blue hover:bg-blue-50 dark:hover:bg-gray-800 font-semibold py-1.5 px-4 rounded-full text-sm"
-          >
-            Create Community
-          </Button>
+          <h2 className="font-bold text-base mb-4">Recent Posts</h2>
+          <div className="space-y-3">
+            {recentPosts.map((post) => (
+              <Link key={post.id} href={`/post/${post.id}`}>
+                <div className="group cursor-pointer">
+                  <h3 className="text-sm font-medium group-hover:text-blue-500 line-clamp-2">
+                    {post.title}
+                  </h3>
+                  <div className="text-xs text-gray-500 dark:text-gray-400 mt-1">
+                    <span>Posted by {post.author.name}</span>
+                    <span className="mx-1">•</span>
+                    <span>{formatTimeAgo(post.createdAt)}</span>
+                  </div>
+                </div>
+              </Link>
+            ))}
+          </div>
+          <div className="mt-4">
+            <Button 
+              onClick={() => setCreatePostModalOpen(true)}
+              className="w-full bg-reddit-orange hover:bg-orange-600 text-white font-semibold py-1.5 px-4 rounded-full text-sm mb-2"
+            >
+              Create Post
+            </Button>
+            <Button 
+              onClick={() => setCreateCommunityModalOpen(true)}
+              variant="outline"
+              className="w-full border border-reddit-blue text-reddit-blue hover:bg-blue-50 dark:hover:bg-gray-800 font-semibold py-1.5 px-4 rounded-full text-sm"
+            >
+              Create Community
+            </Button>
+          </div>
         </div>
       </div>
 
@@ -50,42 +68,6 @@ export default function InfoSidebar() {
             </Button>
           </div>
         </div>
-      </div>
-
-      {/* Popular Communities */}
-      <div className="bg-reddit-light-brighter dark:bg-reddit-dark-brighter rounded-md p-4 border border-reddit-light-border dark:border-reddit-dark-border">
-        <h3 className="font-semibold mb-3">Popular Communities</h3>
-        <ul className="space-y-2">
-          {popularCommunities.map((community) => (
-            <li key={community.id}>
-              <Link 
-                href={`/community/${community.name}`} 
-                className="flex items-center justify-between py-1 hover:bg-gray-100 dark:hover:bg-gray-800 rounded px-1"
-              >
-                <div className="flex items-center">
-                  <div className={`w-6 h-6 rounded-full overflow-hidden ${getCommunityColor(community.name)} mr-2 flex-shrink-0`}>
-                    <span className="text-white text-xs font-bold flex items-center justify-center h-full">
-                      {getCommunityInitial(community.name)}
-                    </span>
-                  </div>
-                  <span className="font-medium text-sm">{community.name}</span>
-                </div>
-                <Button 
-                  size="sm"
-                  className="text-xs bg-reddit-blue hover:bg-blue-600 text-white px-3 py-0.5 rounded-full"
-                >
-                  Join
-                </Button>
-              </Link>
-            </li>
-          ))}
-        </ul>
-        <Button
-          variant="ghost" 
-          className="mt-3 w-full text-reddit-blue hover:bg-gray-100 dark:hover:bg-gray-800 text-sm py-1 rounded font-medium"
-        >
-          See More Communities
-        </Button>
       </div>
 
       {/* Footer Links */}
