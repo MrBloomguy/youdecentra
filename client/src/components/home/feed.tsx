@@ -2,10 +2,13 @@ import React, { useState, useEffect } from 'react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
+import { Badge } from '@/components/ui/badge';
+import { Trophy } from 'lucide-react';
 import PostCard from './post-card';
 import { useOrbis } from '@/lib/orbis';
 import { usePostStore, useUIStore, useAuthStore } from '@/lib/store';
 import { useIsMobile } from '@/hooks/use-mobile';
+import { useTotalPoints } from '@/lib/points';
 import { AppPost } from '@shared/types';
 
 export default function Feed() {
@@ -16,6 +19,7 @@ export default function Feed() {
   const [isLoading, setIsLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<'hot' | 'new' | 'top'>('hot');
   const isMobile = useIsMobile();
+  const { totalPoints, loading: totalPointsLoading } = useTotalPoints();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -119,31 +123,44 @@ export default function Feed() {
       )}
 
       {/* Feed Filters */}
-      <div className="bg-reddit-light-brighter dark:bg-reddit-dark-brighter rounded-md p-2 flex border border-reddit-light-border dark:border-reddit-dark-border">
-        <Button
-          variant="ghost"
-          className={`flex items-center space-x-1 py-1 px-3 text-sm font-semibold rounded-full ${activeFilter === 'hot' ? 'bg-gray-100 dark:bg-gray-800' : ''}`}
-          onClick={() => handleFilterChange('hot')}
-        >
-          <i className="ri-fire-line"></i>
-          <span>Hot</span>
-        </Button>
-        <Button
-          variant="ghost"
-          className={`flex items-center space-x-1 py-1 px-3 text-sm font-semibold rounded-full ${activeFilter === 'new' ? 'bg-gray-100 dark:bg-gray-800' : ''}`}
-          onClick={() => handleFilterChange('new')}
-        >
-          <i className="ri-award-line"></i>
-          <span>New</span>
-        </Button>
-        <Button
-          variant="ghost"
-          className={`flex items-center space-x-1 py-1 px-3 text-sm font-semibold rounded-full ${activeFilter === 'top' ? 'bg-gray-100 dark:bg-gray-800' : ''}`}
-          onClick={() => handleFilterChange('top')}
-        >
-          <i className="ri-bar-chart-line"></i>
-          <span>Top</span>
-        </Button>
+      <div className="bg-reddit-light-brighter dark:bg-reddit-dark-brighter rounded-md p-2 flex justify-between border border-reddit-light-border dark:border-reddit-dark-border">
+        <div className="flex">
+          <Button
+            variant="ghost"
+            className={`flex items-center space-x-1 py-1 px-3 text-sm font-semibold rounded-full ${activeFilter === 'hot' ? 'bg-gray-100 dark:bg-gray-800' : ''}`}
+            onClick={() => handleFilterChange('hot')}
+          >
+            <i className="ri-fire-line"></i>
+            <span>Hot</span>
+          </Button>
+          <Button
+            variant="ghost"
+            className={`flex items-center space-x-1 py-1 px-3 text-sm font-semibold rounded-full ${activeFilter === 'new' ? 'bg-gray-100 dark:bg-gray-800' : ''}`}
+            onClick={() => handleFilterChange('new')}
+          >
+            <i className="ri-award-line"></i>
+            <span>New</span>
+          </Button>
+          <Button
+            variant="ghost"
+            className={`flex items-center space-x-1 py-1 px-3 text-sm font-semibold rounded-full ${activeFilter === 'top' ? 'bg-gray-100 dark:bg-gray-800' : ''}`}
+            onClick={() => handleFilterChange('top')}
+          >
+            <i className="ri-bar-chart-line"></i>
+            <span>Top</span>
+          </Button>
+        </div>
+        
+        {/* Total Points Badge */}
+        {!totalPointsLoading && (
+          <div className="flex items-center ml-auto">
+            <Badge className="bg-primary hover:bg-primary/90 text-black dark:text-black flex items-center gap-1">
+              <Trophy className="h-3 w-3" />
+              <span className="hidden xs:inline">{totalPoints.toLocaleString()} Total Points</span>
+              <span className="xs:hidden">{totalPoints.toLocaleString()}</span>
+            </Badge>
+          </div>
+        )}
       </div>
 
       {/* Posts List */}
