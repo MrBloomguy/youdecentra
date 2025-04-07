@@ -5,6 +5,7 @@ import { Input } from '@/components/ui/input';
 import PostCard from './post-card';
 import { useOrbis } from '@/lib/orbis';
 import { usePostStore, useUIStore, useAuthStore } from '@/lib/store';
+import { useIsMobile } from '@/hooks/use-mobile';
 import { AppPost } from '@shared/types';
 
 export default function Feed() {
@@ -14,6 +15,7 @@ export default function Feed() {
   const { setCreatePostModalOpen } = useUIStore();
   const [isLoading, setIsLoading] = useState(true);
   const [activeFilter, setActiveFilter] = useState<'hot' | 'new' | 'top'>('hot');
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const fetchPosts = async () => {
@@ -72,36 +74,49 @@ export default function Feed() {
   };
 
   return (
-    <div className="col-span-1 md:col-span-2 lg:col-span-2 space-y-4">
-      {/* Create Post Area */}
-      <div className="bg-reddit-light-brighter dark:bg-reddit-dark-brighter rounded-md p-2 flex items-center border border-reddit-light-border dark:border-reddit-dark-border">
-        <div className="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center mr-2">
-          <i className="ri-user-3-line text-gray-600 dark:text-gray-400"></i>
+    <div className="col-span-1 md:col-span-2 lg:col-span-2 space-y-4 relative">
+      {/* Create Post Area - Hidden on Mobile */}
+      {!isMobile && (
+        <div className="bg-reddit-light-brighter dark:bg-reddit-dark-brighter rounded-md p-2 flex items-center border border-reddit-light-border dark:border-reddit-dark-border">
+          <div className="w-8 h-8 rounded-full bg-gray-300 dark:bg-gray-700 flex items-center justify-center mr-2">
+            <i className="ri-user-3-line text-gray-600 dark:text-gray-400"></i>
+          </div>
+          <Input
+            type="text"
+            placeholder="Create Post"
+            className="bg-gray-100 dark:bg-gray-800 rounded-md py-2 px-4 text-sm flex-grow"
+            onClick={() => setCreatePostModalOpen(true)}
+            readOnly
+          />
+          <Button 
+            onClick={() => setCreatePostModalOpen(true)}
+            size="icon"
+            variant="ghost" 
+            className="ml-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
+          >
+            <i className="ri-image-line"></i>
+          </Button>
+          <Button 
+            onClick={() => setCreatePostModalOpen(true)}
+            size="icon"
+            variant="ghost" 
+            className="ml-1 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
+          >
+            <i className="ri-link"></i>
+          </Button>
         </div>
-        <Input
-          type="text"
-          placeholder="Create Post"
-          className="bg-gray-100 dark:bg-gray-800 rounded-md py-2 px-4 text-sm flex-grow"
+      )}
+      
+      {/* Floating Create Post Button - Visible only on Mobile */}
+      {isMobile && (
+        <button 
           onClick={() => setCreatePostModalOpen(true)}
-          readOnly
-        />
-        <Button 
-          onClick={() => setCreatePostModalOpen(true)}
-          size="icon"
-          variant="ghost" 
-          className="ml-2 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
+          className="fixed bottom-20 right-4 z-30 bg-primary text-black w-14 h-14 rounded-full flex items-center justify-center shadow-lg animate-fade-in"
+          aria-label="Create new post"
         >
-          <i className="ri-image-line"></i>
-        </Button>
-        <Button 
-          onClick={() => setCreatePostModalOpen(true)}
-          size="icon"
-          variant="ghost" 
-          className="ml-1 text-gray-500 hover:bg-gray-100 dark:hover:bg-gray-800 rounded-full"
-        >
-          <i className="ri-link"></i>
-        </Button>
-      </div>
+          <i className="ri-add-line text-2xl icon-interaction"></i>
+        </button>
+      )}
 
       {/* Feed Filters */}
       <div className="bg-reddit-light-brighter dark:bg-reddit-dark-brighter rounded-md p-2 flex border border-reddit-light-border dark:border-reddit-dark-border">

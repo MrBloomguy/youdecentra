@@ -121,6 +121,7 @@ export async function registerRoutes(app: Express): Promise<Server> {
     
     ws.on('error', (error) => {
       console.error('WebSocket error:', error);
+      // Don't close the connection here, just log it and let the client handle reconnection
     });
     
     ws.on('close', () => {

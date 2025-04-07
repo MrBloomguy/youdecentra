@@ -79,6 +79,22 @@
   .card-hover-effect {
     @apply transition-all duration-200 ease-out hover:translate-y-[-2px] hover:shadow-md;
   }
+  
+  /* Animation for floating button */
+  @keyframes fade-in {
+    from {
+      opacity: 0;
+      transform: translateY(10px);
+    }
+    to {
+      opacity: 1;
+      transform: translateY(0);
+    }
+  }
+  
+  .animate-fade-in {
+    animation: fade-in 0.3s ease-out forwards;
+  }
 
   /* Post card hover effects */
   .post-card {

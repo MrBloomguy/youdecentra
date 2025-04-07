@@ -73,9 +73,15 @@ class WebSocketClient {
       
       console.log(`Attempting WebSocket connection to: ${wsUrl}`);
       
-      // Create new WebSocket without any query parameters for simplicity
-      this.socket = new WebSocket(wsUrl);
-      console.log('WebSocket object created, waiting for connection...');
+      try {
+        // Create new WebSocket without query parameters for simplicity
+        this.socket = new WebSocket(wsUrl);
+        console.log('WebSocket object created, waiting for connection...');
+      } catch (error) {
+        console.error('Error creating WebSocket:', error);
+        this.scheduleReconnect();
+        return;
+      }
 
       this.socket.onopen = () => {
         console.log('WebSocket connection established successfully');
