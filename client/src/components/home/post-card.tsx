@@ -23,16 +23,16 @@ export default function PostCard({ post }: PostCardProps) {
   const { user } = usePrivy();
   const { points: postPoints, loading: pointsLoading } = usePostPoints(post.id);
   const [shareDialogOpen, setShareDialogOpen] = useState(false);
-  
+
   const handleVote = async (type: 'up' | 'down') => {
     if (!isAuthenticated) {
       setAuthModalOpen(true);
       return;
     }
-    
+
     // Save the previous vote to handle optimistic UI updates
     const previousVote = post.userVote;
-    
+
     // If user is clicking the same vote they already have, remove the vote
     if (post.userVote === type) {
       // Handle UI update optimistically
@@ -44,7 +44,7 @@ export default function PostCard({ post }: PostCardProps) {
       updatePostVote(post.id, type, previousVote || null);
       // Submit vote through Orbis
       await votePost(post.id, type === 'up' ? 'upvote' : 'downvote');
-      
+
       // Award points for liking if user is authenticated and has wallet
       if (user?.wallet?.address) {
         try {
@@ -59,15 +59,15 @@ export default function PostCard({ post }: PostCardProps) {
       }
     }
   };
-  
+
   // Handle share button click
   const handleShare = () => {
     setShareDialogOpen(true);
   };
-  
+
   // Check if post has media to display
   const hasImage = post.mediaUrls && post.mediaUrls.length > 0 && post.mediaUrls.some(url => isImageUrl(url));
-  
+
   // Get the first image if there are any
   const firstImage = hasImage ? post.mediaUrls.find(url => isImageUrl(url)) : null;
 
@@ -149,7 +149,7 @@ export default function PostCard({ post }: PostCardProps) {
               </Badge>
             </div>
           )}
-          
+
           {/* Post actions */}
           <div className="flex items-center text-xs text-gray-500 dark:text-gray-400">
             <Button
@@ -163,7 +163,7 @@ export default function PostCard({ post }: PostCardProps) {
                 <span>{post.commentCount} comments</span>
               </Link>
             </Button>
-            
+
             <Button 
               variant="ghost"
               size="sm"
@@ -173,7 +173,7 @@ export default function PostCard({ post }: PostCardProps) {
               <Share2 className="h-4 w-4 mr-1" />
               <span>Share</span>
             </Button>
-            
+
             <Button 
               variant="ghost"
               size="sm"
@@ -185,7 +185,7 @@ export default function PostCard({ post }: PostCardProps) {
           </div>
         </div>
       </div>
-      
+
       {/* Share Post Dialog */}
       <SharePostDialog 
         post={post} 
