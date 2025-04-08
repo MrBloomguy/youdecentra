@@ -11,6 +11,35 @@ export default function Messages() {
   const { toast } = useToast();
   const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
   const [searchUsername, setSearchUsername] = useState('');
+const [searchResults, setSearchResults] = useState<AppUser[]>([]);
+
+  const searchUsers = async (query: string) => {
+    if (!query.trim()) {
+      setSearchResults([]);
+      return;
+    }
+
+    try {
+      const response = await fetch(`/api/search?q=${encodeURIComponent(query)}`);
+      const data = await response.json();
+      setSearchResults(data.users || []);
+    } catch (error) {
+      console.error('Error searching users:', error);
+      toast({
+        title: "Error",
+        description: "Failed to search users",
+        variant: "destructive"
+      });
+    }
+  };
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      searchUsers(searchUsername);
+    }, 300);
+
+    return () => clearTimeout(timer);
+  }, [searchUsername]);
 
   if (!isAuthenticated) {
     return (
@@ -64,9 +93,44 @@ export default function Messages() {
                 </div>
               </div>
               <div className="overflow-y-auto h-[calc(100%-161px)]">
-                <div className="text-center p-4 text-gray-500">
-                  No conversations yet
-                </div>
+                {searchUsername.trim() ? (
+                  <div className="divide-y">
+                    {searchResults.length > 0 ? (
+                      searchResults.map((user) => (
+                        <div 
+                          key={user.id}
+                          className="p-4 hover:bg-gray-50 dark:hover:bg-gray-800 cursor-pointer flex items-center gap-3"
+                          onClick={() => {
+                            // Handle starting conversation
+                            toast({
+                              title: "Starting conversation",
+                              description: `Creating chat with ${user.email || user.walletAddress}...`
+                            });
+                          }}
+                        >
+                          <div className="w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
+                            {user.avatar ? (
+                              <img src={user.avatar} alt={user.email} className="w-full h-full rounded-full" />
+                            ) : (
+                              <span className="text-gray-500">{user.email?.[0] || user.walletAddress[0]}</span>
+                            )}
+                          </div>
+                          <div>
+                            <p className="font-medium">{user.email || user.walletAddress}</p>
+                          </div>
+                        </div>
+                      ))
+                    ) : (
+                      <div className="text-center p-4 text-gray-500">
+                        No users found
+                      </div>
+                    )}
+                  </div>
+                ) : (
+                  <div className="text-center p-4 text-gray-500">
+                    No conversations yet
+                  </div>
+                )}
               </div>
             </div>
 
