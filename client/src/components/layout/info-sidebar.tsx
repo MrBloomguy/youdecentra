@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useEffect, useState } from 'react';
 import { Link } from 'wouter';
 import { Button } from '@/components/ui/button';
 import { usePostStore, useUIStore } from '@/lib/store';
@@ -36,7 +36,7 @@ export default function InfoSidebar() {
               </Link>
             ))}
           </div>
-          
+
         </div>
       </div>
 

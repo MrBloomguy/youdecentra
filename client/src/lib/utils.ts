@@ -50,7 +50,8 @@ export function getCommunityInitial(name: string): string {
 }
 
 // Check if a URL is an image
-export function isImageUrl(url: string): boolean {
+export function isImageUrl(url: string | null | undefined): boolean {
+  if (!url) return false;
   const imageExtensions = ['.jpg', '.jpeg', '.png', '.gif', '.webp', '.svg'];
   return imageExtensions.some(ext => url.toLowerCase().endsWith(ext));
 }
