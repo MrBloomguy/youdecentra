@@ -90,7 +90,8 @@ export const OrbisContextProvider = ({ children }: { children: ReactNode }) => {
     title: string, 
     content: string, 
     media: string[] = [], 
-    context: string
+    context: string,
+    timeout: number = 60000 // Added 60 second timeout
   ): Promise<string | null> => {
     if (!orbis || !isConnected) {
       toast({

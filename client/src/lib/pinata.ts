@@ -29,6 +29,7 @@ export async function uploadFileToPinata(file: File): Promise<string | null> {
           'pinata_api_key': PINATA_API_KEY,
           'pinata_secret_api_key': PINATA_SECRET_KEY,
         },
+        timeout: 30000, // 30 second timeout
       }
     );
     
@@ -36,10 +37,13 @@ export async function uploadFileToPinata(file: File): Promise<string | null> {
       return `${PINATA_GATEWAY}${response.data.IpfsHash}`;
     }
     
-    return null;
+    throw new Error(`Pinata upload failed with status ${response.status}`);
   } catch (error) {
     console.error('Error uploading file to Pinata:', error);
-    return null;
+    if (axios.isAxiosError(error) && error.response) {
+      throw new Error(`Pinata upload failed: ${error.response.data.message || error.message}`);
+    }
+    throw new Error('Failed to upload image to Pinata');
   }
 }
 
