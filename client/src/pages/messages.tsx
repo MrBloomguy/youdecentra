@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useAuthStore } from '@/lib/store';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -9,9 +9,7 @@ import { UserSearch } from 'lucide-react';
 export default function Messages() {
   const { isAuthenticated, user } = useAuthStore();
   const { toast } = useToast();
-  import { useEffect } from 'react';
-
-const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
+  const [selectedConversation, setSelectedConversation] = useState<number | null>(null);
   const [searchUsername, setSearchUsername] = useState('');
 const [searchResults, setSearchResults] = useState<AppUser[]>([]);
 
