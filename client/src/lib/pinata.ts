@@ -1,9 +1,9 @@
 import axios from 'axios';
 
 // Pinata API configuration
-const PINATA_API_KEY = import.meta.env.VITE_PINATA_API_KEY || "381adc182d6baea2d2ed";
-const PINATA_SECRET_KEY = import.meta.env.VITE_PINATA_SECRET_KEY || "c6ed142b8482529dc365069c06382605b82be0255d913eb2285a6d0a94e9f442";
-const PINATA_GATEWAY = "https://gateway.pinata.cloud/ipfs/";
+const PINATA_JWT = import.meta.env.VITE_PINATA_JWT;
+const GATEWAY_URL = import.meta.env.VITE_GATEWAY_URL;
+const PINATA_GATEWAY = `https://${GATEWAY_URL}/ipfs/`;
 
 /**
  * Upload a file to IPFS via Pinata
@@ -26,8 +26,7 @@ export async function uploadFileToPinata(file: File): Promise<string | null> {
       {
         headers: {
           'Content-Type': `multipart/form-data;`,
-          'pinata_api_key': PINATA_API_KEY,
-          'pinata_secret_api_key': PINATA_SECRET_KEY,
+          'Authorization': `Bearer ${PINATA_JWT}`,
         },
         timeout: 30000, // 30 second timeout
       }
