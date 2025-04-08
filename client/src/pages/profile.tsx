@@ -38,7 +38,8 @@ export default function Profile() {
   const { toast } = useToast();
   const { user: currentUser } = useAuthStore();
   const { points: userPoints, loading: pointsLoading } = useUserPoints(userId);
-  const { points: donationPoints, loading: donationLoading } = useUserDonationPoints(userId);
+  const { points: donationPoints, loading: donationLoading } =
+    useUserDonationPoints(userId);
   const { rank: userRank, loading: rankLoading } = useUserRank(userId);
 
   const [posts, setPosts] = useState<AppPost[]>([]);
@@ -73,9 +74,9 @@ export default function Profile() {
             profile: {
               username: undefined,
               description: undefined,
-              pfp: undefined
-            }
-          }
+              pfp: undefined,
+            },
+          },
         });
       } finally {
         setIsLoading(false);
@@ -100,7 +101,8 @@ export default function Profile() {
     fetchPosts();
   }, [userId, getUserPosts]);
 
-  const displayName = profile?.details?.profile?.username || formatAddress(userId);
+  const displayName =
+    profile?.details?.profile?.username || formatAddress(userId);
 
   return (
     <>
@@ -134,10 +136,13 @@ export default function Profile() {
                   <div className="flex flex-col md:flex-row w-full items-center justify-between gap-4">
                     <div className="text-center md:text-left">
                       <h1 className="text-3xl font-bold mb-1">
-                        {profile?.details?.profile?.username || formatAddress(userId.split(':').pop() || '')}
+                        {profile?.details?.profile?.username ||
+                          formatAddress(userId.split(":").pop() || "")}
                       </h1>
                       <div className="flex items-center gap-2 text-gray-500 dark:text-gray-400">
-                        <span className="text-sm">@{userId.split(':').pop()?.slice(-8)}</span>
+                        <span className="text-sm">
+                          @{userId.split(":").pop()?.slice(-8)}
+                        </span>
                       </div>
                     </div>
 
@@ -154,54 +159,72 @@ export default function Profile() {
                                 Make changes to your profile here
                               </DialogDescription>
                             </DialogHeader>
-                            <form onSubmit={async (e) => {
-                              e.preventDefault();
-                              const form = e.target as HTMLFormElement;
-                              const username = (form.elements.namedItem('username') as HTMLInputElement).value;
-                              const description = (form.elements.namedItem('description') as HTMLTextAreaElement).value;
+                            <form
+                              onSubmit={async (e) => {
+                                e.preventDefault();
+                                const form = e.target as HTMLFormElement;
+                                const username = (
+                                  form.elements.namedItem(
+                                    "username",
+                                  ) as HTMLInputElement
+                                ).value;
+                                const description = (
+                                  form.elements.namedItem(
+                                    "description",
+                                  ) as HTMLTextAreaElement
+                                ).value;
 
-                              const { orbis } = useOrbis();
-                              if (username && orbis) {
-                                try {
-                                  const res = await orbis.updateProfile({
-                                    username,
-                                    description,
-                                    pfp: profile?.details?.profile?.pfp
-                                  });
-
-                                  if (res.status === 200) {
-                                    toast({
-                                      title: "Profile updated",
-                                      description: "Your profile has been updated successfully"
+                                const { orbis } = useOrbis();
+                                if (username && orbis) {
+                                  try {
+                                    const res = await orbis.updateProfile({
+                                      username,
+                                      description,
+                                      pfp: profile?.details?.profile?.pfp,
                                     });
-                                    const updatedProfile = await getProfile(userId);
-                                    setProfile(updatedProfile);
-                                    form.reset();
+
+                                    if (res.status === 200) {
+                                      toast({
+                                        title: "Profile updated",
+                                        description:
+                                          "Your profile has been updated successfully",
+                                      });
+                                      const updatedProfile =
+                                        await getProfile(userId);
+                                      setProfile(updatedProfile);
+                                      form.reset();
+                                    }
+                                  } catch (error) {
+                                    toast({
+                                      title: "Error",
+                                      description: "Failed to update profile",
+                                      variant: "destructive",
+                                    });
                                   }
-                                } catch (error) {
-                                  toast({
-                                    title: "Error",
-                                    description: "Failed to update profile",
-                                    variant: "destructive"
-                                  });
                                 }
-                              }
-                            }}>
+                              }}
+                            >
                               <div className="space-y-4 py-4">
                                 <div className="space-y-2">
                                   <Label htmlFor="username">Username</Label>
                                   <Input
                                     id="username"
                                     name="username"
-                                    defaultValue={profile?.details?.profile?.username}
+                                    defaultValue={
+                                      profile?.details?.profile?.username
+                                    }
                                   />
                                 </div>
                                 <div className="space-y-2">
-                                  <Label htmlFor="description">Description</Label>
+                                  <Label htmlFor="description">
+                                    Description
+                                  </Label>
                                   <Textarea
                                     id="description"
                                     name="description"
-                                    defaultValue={profile?.details?.profile?.description}
+                                    defaultValue={
+                                      profile?.details?.profile?.description
+                                    }
                                   />
                                 </div>
                               </div>
@@ -213,38 +236,56 @@ export default function Profile() {
                         </Dialog>
                       ) : (
                         <>
-                          <Button variant="default" onClick={async () => {
-                            if (!orbis || !currentUser) {
-                              toast({
-                                title: "Not connected",
-                                description: "Please connect your wallet to follow users",
-                                variant: "destructive",
-                              });
-                              return;
-                            }
-                            try {
-                              const isFollowing = await orbis.getIsFollowing(currentUser.id, userId);
-                              const res = await orbis.setFollow(userId, !isFollowing);
-
-                              if (res.status === 200) {
+                          <Button
+                            variant="default"
+                            onClick={async () => {
+                              if (!orbis || !currentUser) {
                                 toast({
-                                  title: "Success",
-                                  description: isFollowing ? "Unfollowed user" : "Now following user"
+                                  title: "Not connected",
+                                  description:
+                                    "Please connect your wallet to follow users",
+                                  variant: "destructive",
                                 });
-                                const updatedProfile = await getProfile(userId);
-                                setProfile(updatedProfile);
+                                return;
                               }
-                            } catch (error) {
-                              toast({
-                                title: "Error",
-                                description: "Failed to update follow status",
-                                variant: "destructive"
-                              });
-                            }
-                          }}>
+                              try {
+                                const isFollowing = await orbis.getIsFollowing(
+                                  currentUser.id,
+                                  userId,
+                                );
+                                const res = await orbis.setFollow(
+                                  userId,
+                                  !isFollowing,
+                                );
+
+                                if (res.status === 200) {
+                                  toast({
+                                    title: "Success",
+                                    description: isFollowing
+                                      ? "Unfollowed user"
+                                      : "Now following user",
+                                  });
+                                  const updatedProfile =
+                                    await getProfile(userId);
+                                  setProfile(updatedProfile);
+                                }
+                              } catch (error) {
+                                toast({
+                                  title: "Error",
+                                  description: "Failed to update follow status",
+                                  variant: "destructive",
+                                });
+                              }
+                            }}
+                          >
                             Follow
                           </Button>
-                          <Button variant="outline" onClick={() => window.location.href = `/user/${user?.id}`}>
+                          <Button
+                            variant="outline"
+                            onClick={() =>
+                              (window.location.href = `/user/${user?.id}`)
+                            }
+                          >
                             View Profile
                           </Button>
                         </>
@@ -259,16 +300,22 @@ export default function Profile() {
                       <p className="text-sm text-gray-500">Posts</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-xl font-semibold">{profile?.count_followers || 0}</p>
+                      <p className="text-xl font-semibold">
+                        {profile?.count_followers || 0}
+                      </p>
                       <p className="text-sm text-gray-500">Followers</p>
                     </div>
                     <div className="text-center">
-                      <p className="text-xl font-semibold">{profile?.count_following || 0}</p>
+                      <p className="text-xl font-semibold">
+                        {profile?.count_following || 0}
+                      </p>
                       <p className="text-sm text-gray-500">Following</p>
                     </div>
                     {!rankLoading && userRank > 0 && (
                       <div className="text-center">
-                        <p className="text-xl font-semibold text-purple-600">#{userRank}</p>
+                        <p className="text-xl font-semibold text-purple-600">
+                          #{userRank}
+                        </p>
                         <p className="text-sm text-gray-500">Rank</p>
                       </div>
                     )}
@@ -283,25 +330,37 @@ export default function Profile() {
               </div>
 
               {/* Content Tabs */}
-              <Tabs defaultValue="posts" className="w-full" onValueChange={setActiveTab}>
+              <Tabs
+                defaultValue="posts"
+                className="w-full"
+                onValueChange={setActiveTab}
+              >
                 <TabsList className="w-full border-b border-gray-200 dark:border-gray-700">
-                  <TabsTrigger value="posts" className="flex-1">Posts</TabsTrigger>
-                  <TabsTrigger value="comments" className="flex-1">Comments</TabsTrigger>
-                  <TabsTrigger value="about" className="flex-1">About</TabsTrigger>
+                  <TabsTrigger value="posts" className="flex-1">
+                    Posts
+                  </TabsTrigger>
+                  <TabsTrigger value="comments" className="flex-1">
+                    Comments
+                  </TabsTrigger>
+                  <TabsTrigger value="about" className="flex-1">
+                    About
+                  </TabsTrigger>
                 </TabsList>
 
                 <TabsContent value="posts" className="pt-6">
                   {isLoading ? (
                     <div className="space-y-4">
-                      {Array(3).fill(0).map((_, index) => (
-                        <div
-                          key={index}
-                          className="bg-white dark:bg-gray-800 rounded-lg p-4 animate-pulse"
-                        >
-                          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
-                          <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
-                        </div>
-                      ))}
+                      {Array(3)
+                        .fill(0)
+                        .map((_, index) => (
+                          <div
+                            key={index}
+                            className="bg-white dark:bg-gray-800 rounded-lg p-4 animate-pulse"
+                          >
+                            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-3/4 mb-2"></div>
+                            <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+                          </div>
+                        ))}
                     </div>
                   ) : posts.length > 0 ? (
                     <div className="space-y-4">
@@ -312,7 +371,9 @@ export default function Profile() {
                   ) : (
                     <div className="text-center py-8">
                       <p className="text-gray-500 dark:text-gray-400">
-                        {isOwnProfile ? "You haven't created any posts yet." : "This user hasn't created any posts yet."}
+                        {isOwnProfile
+                          ? "You haven't created any posts yet."
+                          : "This user hasn't created any posts yet."}
                       </p>
                     </div>
                   )}
@@ -321,7 +382,9 @@ export default function Profile() {
                 <TabsContent value="comments" className="pt-6">
                   <div className="text-center py-8">
                     <p className="text-gray-500 dark:text-gray-400">
-                      {isOwnProfile ? "Your comments will appear here." : "This user's comments will appear here."}
+                      {isOwnProfile
+                        ? "Your comments will appear here."
+                        : "This user's comments will appear here."}
                     </p>
                   </div>
                 </TabsContent>
@@ -331,7 +394,8 @@ export default function Profile() {
                     <div>
                       <h3 className="text-lg font-semibold mb-2">Bio</h3>
                       <p className="text-gray-600 dark:text-gray-300">
-                        {profile?.details?.profile?.description || "No bio provided."}
+                        {profile?.details?.profile?.description ||
+                          "No bio provided."}
                       </p>
                     </div>
 
@@ -341,20 +405,36 @@ export default function Profile() {
                       <h3 className="text-lg font-semibold mb-2">Stats</h3>
                       <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
                         <div>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">Total Posts</p>
-                          <p className="text-xl font-semibold">{posts.length}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            Total Posts
+                          </p>
+                          <p className="text-xl font-semibold">
+                            {posts.length}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">Points</p>
-                          <p className="text-xl font-semibold text-green-600">{userPoints || 0}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            Points
+                          </p>
+                          <p className="text-xl font-semibold text-green-600">
+                            {userPoints || 0}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">Followers</p>
-                          <p className="text-xl font-semibold">{profile?.count_followers || 0}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            Followers
+                          </p>
+                          <p className="text-xl font-semibold">
+                            {profile?.count_followers || 0}
+                          </p>
                         </div>
                         <div>
-                          <p className="text-sm text-gray-500 dark:text-gray-400">Following</p>
-                          <p className="text-xl font-semibold">{profile?.count_following || 0}</p>
+                          <p className="text-sm text-gray-500 dark:text-gray-400">
+                            Following
+                          </p>
+                          <p className="text-xl font-semibold">
+                            {profile?.count_following || 0}
+                          </p>
                         </div>
                       </div>
                     </div>
@@ -369,10 +449,13 @@ export default function Profile() {
                           </h3>
                           <p className="text-3xl font-bold">#{userRank}</p>
                           <p className="mt-2 text-white/80">
-                            {userRank === 1 ? "Top of the leaderboard!" :
-                             userRank <= 10 ? "Top 10 contributor!" :
-                             userRank <= 100 ? "Top 100 contributor!" :
-                             "Keep contributing to climb the ranks!"}
+                            {userRank === 1
+                              ? "Top of the leaderboard!"
+                              : userRank <= 10
+                                ? "Top 10 contributor!"
+                                : userRank <= 100
+                                  ? "Top 100 contributor!"
+                                  : "Keep contributing to climb the ranks!"}
                           </p>
                         </div>
                       </>
