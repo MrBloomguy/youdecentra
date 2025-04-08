@@ -1,0 +1,167 @@
+orbis.ts:247 Failed to fetch posts: Error: Request timed out after 15 seconds
+    at orbis.ts:194:20
+getPosts @ orbis.ts:247
+await in getPosts
+fetchPosts @ feed.tsx:29
+(anonymous) @ feed.tsx:53
+commitHookEffectListMount @ chunk-SM3OW2QE.js?v=8729b02a:16915
+commitPassiveMountOnFiber @ chunk-SM3OW2QE.js?v=8729b02a:18156
+commitPassiveMountEffects_complete @ chunk-SM3OW2QE.js?v=8729b02a:18129
+commitPassiveMountEffects_begin @ chunk-SM3OW2QE.js?v=8729b02a:18119
+commitPassiveMountEffects @ chunk-SM3OW2QE.js?v=8729b02a:18109
+flushPassiveEffectsImpl @ chunk-SM3OW2QE.js?v=8729b02a:19490
+flushPassiveEffects @ chunk-SM3OW2QE.js?v=8729b02a:19447
+performSyncWorkOnRoot @ chunk-SM3OW2QE.js?v=8729b02a:18868
+flushSyncCallbacks @ chunk-SM3OW2QE.js?v=8729b02a:9119
+commitRootImpl @ chunk-SM3OW2QE.js?v=8729b02a:19432
+commitRoot @ chunk-SM3OW2QE.js?v=8729b02a:19277
+finishConcurrentRender @ chunk-SM3OW2QE.js?v=8729b02a:18805
+performConcurrentWorkOnRoot @ chunk-SM3OW2QE.js?v=8729b02a:18718
+workLoop @ chunk-SM3OW2QE.js?v=8729b02a:197
+flushWork @ chunk-SM3OW2QE.js?v=8729b02a:176
+performWorkUntilDeadline @ chunk-SM3OW2QE.js?v=8729b02a:384Understand this errorAI
+orbis.ts:252 Using cached posts data due to fetch error
+orbis.ts:247 Failed to fetch posts: Error: Request timed out after 15 seconds
+    at orbis.ts:194:20
+getPosts @ orbis.ts:247
+await in getPosts
+fetchPosts @ feed.tsx:29
+(anonymous) @ feed.tsx:53
+commitHookEffectListMount @ chunk-SM3OW2QE.js?v=8729b02a:16915
+commitPassiveMountOnFiber @ chunk-SM3OW2QE.js?v=8729b02a:18156
+commitPassiveMountEffects_complete @ chunk-SM3OW2QE.js?v=8729b02a:18129
+commitPassiveMountEffects_begin @ chunk-SM3OW2QE.js?v=8729b02a:18119
+commitPassiveMountEffects @ chunk-SM3OW2QE.js?v=8729b02a:18109
+flushPassiveEffectsImpl @ chunk-SM3OW2QE.js?v=8729b02a:19490
+flushPassiveEffects @ chunk-SM3OW2QE.js?v=8729b02a:19447
+performSyncWorkOnRoot @ chunk-SM3OW2QE.js?v=8729b02a:18868
+flushSyncCallbacks @ chunk-SM3OW2QE.js?v=8729b02a:9119
+commitRootImpl @ chunk-SM3OW2QE.js?v=8729b02a:19432
+commitRoot @ chunk-SM3OW2QE.js?v=8729b02a:19277
+finishConcurrentRender @ chunk-SM3OW2QE.js?v=8729b02a:18805
+performConcurrentWorkOnRoot @ chunk-SM3OW2QE.js?v=8729b02a:18718
+workLoop @ chunk-SM3OW2QE.js?v=8729b02a:197
+flushWork @ chunk-SM3OW2QE.js?v=8729b02a:176
+performWorkUntilDeadline @ chunk-SM3OW2QE.js?v=8729b02a:384Understand this errorAI
+orbis.ts:252 Using cached posts data due to fetch error
+orbis.ts:247 Failed to fetch posts: Error: Request timed out after 15 seconds
+    at orbis.ts:194:20
+getPosts @ orbis.ts:247
+await in getPosts
+fetchPosts @ feed.tsx:29
+(anonymous) @ feed.tsx:53
+commitHookEffectListMount @ chunk-SM3OW2QE.js?v=8729b02a:16915
+commitPassiveMountOnFiber @ chunk-SM3OW2QE.js?v=8729b02a:18156
+commitPassiveMountEffects_complete @ chunk-SM3OW2QE.js?v=8729b02a:18129
+commitPassiveMountEffects_begin @ chunk-SM3OW2QE.js?v=8729b02a:18119
+commitPassiveMountEffects @ chunk-SM3OW2QE.js?v=8729b02a:18109
+flushPassiveEffectsImpl @ chunk-SM3OW2QE.js?v=8729b02a:19490
+flushPassiveEffects @ chunk-SM3OW2QE.js?v=8729b02a:19447
+commitRootImpl @ chunk-SM3OW2QE.js?v=8729b02a:19416
+commitRoot @ chunk-SM3OW2QE.js?v=8729b02a:19277
+performSyncWorkOnRoot @ chunk-SM3OW2QE.js?v=8729b02a:18895
+flushSyncCallbacks @ chunk-SM3OW2QE.js?v=8729b02a:9119
+commitRootImpl @ chunk-SM3OW2QE.js?v=8729b02a:19432
+commitRoot @ chunk-SM3OW2QE.js?v=8729b02a:19277
+finishConcurrentRender @ chunk-SM3OW2QE.js?v=8729b02a:18805
+performConcurrentWorkOnRoot @ chunk-SM3OW2QE.js?v=8729b02a:18718
+workLoop @ chunk-SM3OW2QE.js?v=8729b02a:197
+flushWork @ chunk-SM3OW2QE.js?v=8729b02a:176
+performWorkUntilDeadline @ chunk-SM3OW2QE.js?v=8729b02a:384Understand this errorAI
+orbis.ts:252 Using cached posts data due to fetch error
+websocket.ts:86 Attempting WebSocket connection to: wss://37938e4f-f926-4967-8b1a-3581171687b7-00-bnr0fyueiucy.spock.replit.dev/ws
+websocket.ts:102 WebSocket object created, waiting for connection...
+websocket.ts:120 WebSocket connection established successfully
+orbis.ts:247 Failed to fetch posts: Error: Request timed out after 15 seconds
+    at orbis.ts:194:20
+getPosts @ orbis.ts:247
+await in getPosts
+fetchPosts @ feed.tsx:29
+(anonymous) @ feed.tsx:53
+commitHookEffectListMount @ chunk-SM3OW2QE.js?v=8729b02a:16915
+commitPassiveMountOnFiber @ chunk-SM3OW2QE.js?v=8729b02a:18156
+commitPassiveMountEffects_complete @ chunk-SM3OW2QE.js?v=8729b02a:18129
+commitPassiveMountEffects_begin @ chunk-SM3OW2QE.js?v=8729b02a:18119
+commitPassiveMountEffects @ chunk-SM3OW2QE.js?v=8729b02a:18109
+flushPassiveEffectsImpl @ chunk-SM3OW2QE.js?v=8729b02a:19490
+flushPassiveEffects @ chunk-SM3OW2QE.js?v=8729b02a:19447
+performSyncWorkOnRoot @ chunk-SM3OW2QE.js?v=8729b02a:18868
+flushSyncCallbacks @ chunk-SM3OW2QE.js?v=8729b02a:9119
+commitRootImpl @ chunk-SM3OW2QE.js?v=8729b02a:19432
+commitRoot @ chunk-SM3OW2QE.js?v=8729b02a:19277
+finishConcurrentRender @ chunk-SM3OW2QE.js?v=8729b02a:18805
+performConcurrentWorkOnRoot @ chunk-SM3OW2QE.js?v=8729b02a:18718
+workLoop @ chunk-SM3OW2QE.js?v=8729b02a:197
+flushWork @ chunk-SM3OW2QE.js?v=8729b02a:176
+performWorkUntilDeadline @ chunk-SM3OW2QE.js?v=8729b02a:384Understand this errorAI
+orbis.ts:252 Using cached posts data due to fetch error
+2websocket.ts:222 WebSocket authenticated for user: did:privy:cm97oarmz0159i80l1lvnvh5k
+orbis.ts:247 Failed to fetch posts: Error: Request timed out after 15 seconds
+    at orbis.ts:194:20
+getPosts @ orbis.ts:247
+await in getPosts
+fetchPosts @ feed.tsx:29
+(anonymous) @ feed.tsx:53
+commitHookEffectListMount @ chunk-SM3OW2QE.js?v=8729b02a:16915
+commitPassiveMountOnFiber @ chunk-SM3OW2QE.js?v=8729b02a:18156
+commitPassiveMountEffects_complete @ chunk-SM3OW2QE.js?v=8729b02a:18129
+commitPassiveMountEffects_begin @ chunk-SM3OW2QE.js?v=8729b02a:18119
+commitPassiveMountEffects @ chunk-SM3OW2QE.js?v=8729b02a:18109
+flushPassiveEffectsImpl @ chunk-SM3OW2QE.js?v=8729b02a:19490
+flushPassiveEffects @ chunk-SM3OW2QE.js?v=8729b02a:19447
+performSyncWorkOnRoot @ chunk-SM3OW2QE.js?v=8729b02a:18868
+flushSyncCallbacks @ chunk-SM3OW2QE.js?v=8729b02a:9119
+commitRootImpl @ chunk-SM3OW2QE.js?v=8729b02a:19432
+commitRoot @ chunk-SM3OW2QE.js?v=8729b02a:19277
+finishConcurrentRender @ chunk-SM3OW2QE.js?v=8729b02a:18805
+performConcurrentWorkOnRoot @ chunk-SM3OW2QE.js?v=8729b02a:18718
+workLoop @ chunk-SM3OW2QE.js?v=8729b02a:197
+flushWork @ chunk-SM3OW2QE.js?v=8729b02a:176
+performWorkUntilDeadline @ chunk-SM3OW2QE.js?v=8729b02a:384Understand this errorAI
+orbis.ts:252 Using cached posts data due to fetch error
+orbis.ts:247 Failed to fetch posts: Error: Request timed out after 15 seconds
+    at orbis.ts:194:20
+getPosts @ orbis.ts:247
+await in getPosts
+fetchPosts @ feed.tsx:29
+(anonymous) @ feed.tsx:53
+commitHookEffectListMount @ chunk-SM3OW2QE.js?v=8729b02a:16915
+commitPassiveMountOnFiber @ chunk-SM3OW2QE.js?v=8729b02a:18156
+commitPassiveMountEffects_complete @ chunk-SM3OW2QE.js?v=8729b02a:18129
+commitPassiveMountEffects_begin @ chunk-SM3OW2QE.js?v=8729b02a:18119
+commitPassiveMountEffects @ chunk-SM3OW2QE.js?v=8729b02a:18109
+flushPassiveEffectsImpl @ chunk-SM3OW2QE.js?v=8729b02a:19490
+flushPassiveEffects @ chunk-SM3OW2QE.js?v=8729b02a:19447
+performSyncWorkOnRoot @ chunk-SM3OW2QE.js?v=8729b02a:18868
+flushSyncCallbacks @ chunk-SM3OW2QE.js?v=8729b02a:9119
+commitRootImpl @ chunk-SM3OW2QE.js?v=8729b02a:19432
+commitRoot @ chunk-SM3OW2QE.js?v=8729b02a:19277
+finishConcurrentRender @ chunk-SM3OW2QE.js?v=8729b02a:18805
+performConcurrentWorkOnRoot @ chunk-SM3OW2QE.js?v=8729b02a:18718
+workLoop @ chunk-SM3OW2QE.js?v=8729b02a:197
+flushWork @ chunk-SM3OW2QE.js?v=8729b02a:176
+performWorkUntilDeadline @ chunk-SM3OW2QE.js?v=8729b02a:384Understand this errorAI
+orbis.ts:252 Using cached posts data due to fetch error
+orbis.ts:247 Failed to fetch posts: Error: Request timed out after 15 seconds
+    at orbis.ts:194:20
+getPosts @ orbis.ts:247
+await in getPosts
+fetchPosts @ feed.tsx:29
+(anonymous) @ feed.tsx:53
+commitHookEffectListMount @ chunk-SM3OW2QE.js?v=8729b02a:16915
+commitPassiveMountOnFiber @ chunk-SM3OW2QE.js?v=8729b02a:18156
+commitPassiveMountEffects_complete @ chunk-SM3OW2QE.js?v=8729b02a:18129
+commitPassiveMountEffects_begin @ chunk-SM3OW2QE.js?v=8729b02a:18119
+commitPassiveMountEffects @ chunk-SM3OW2QE.js?v=8729b02a:18109
+flushPassiveEffectsImpl @ chunk-SM3OW2QE.js?v=8729b02a:19490
+flushPassiveEffects @ chunk-SM3OW2QE.js?v=8729b02a:19447
+performSyncWorkOnRoot @ chunk-SM3OW2QE.js?v=8729b02a:18868
+flushSyncCallbacks @ chunk-SM3OW2QE.js?v=8729b02a:9119
+commitRootImpl @ chunk-SM3OW2QE.js?v=8729b02a:19432
+commitRoot @ chunk-SM3OW2QE.js?v=8729b02a:19277
+finishConcurrentRender @ chunk-SM3OW2QE.js?v=8729b02a:18805
+performConcurrentWorkOnRoot @ chunk-SM3OW2QE.js?v=8729b02a:18718
+workLoop @ chunk-SM3OW2QE.js?v=8729b02a:197
+flushWork @ chunk-SM3OW2QE.js?v=8729b02a:176
+performWorkUntilDeadline @ chunk-SM3OW2QE.js?v=8729b02a:384Understand this errorAI
+orbis.ts:252 Using cached posts data due to fetch error
