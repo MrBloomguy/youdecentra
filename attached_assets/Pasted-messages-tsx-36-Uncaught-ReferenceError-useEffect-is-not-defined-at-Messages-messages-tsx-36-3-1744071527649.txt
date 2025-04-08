@@ -1,0 +1,117 @@
+messages.tsx:36 Uncaught ReferenceError: useEffect is not defined
+    at Messages (messages.tsx:36:3)
+    at renderWithHooks (chunk-SM3OW2QE.js?v=8729b02a:11548:26)
+    at mountIndeterminateComponent (chunk-SM3OW2QE.js?v=8729b02a:14926:21)
+    at beginWork (chunk-SM3OW2QE.js?v=8729b02a:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-SM3OW2QE.js?v=8729b02a:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-SM3OW2QE.js?v=8729b02a:3699:24)
+    at invokeGuardedCallback (chunk-SM3OW2QE.js?v=8729b02a:3733:39)
+    at beginWork$1 (chunk-SM3OW2QE.js?v=8729b02a:19765:15)
+    at performUnitOfWork (chunk-SM3OW2QE.js?v=8729b02a:19198:20)
+    at workLoopSync (chunk-SM3OW2QE.js?v=8729b02a:19137:13)
+Messages @ messages.tsx:36
+renderWithHooks @ chunk-SM3OW2QE.js?v=8729b02a:11548
+mountIndeterminateComponent @ chunk-SM3OW2QE.js?v=8729b02a:14926
+beginWork @ chunk-SM3OW2QE.js?v=8729b02a:15914
+callCallback2 @ chunk-SM3OW2QE.js?v=8729b02a:3674
+invokeGuardedCallbackDev @ chunk-SM3OW2QE.js?v=8729b02a:3699
+invokeGuardedCallback @ chunk-SM3OW2QE.js?v=8729b02a:3733
+beginWork$1 @ chunk-SM3OW2QE.js?v=8729b02a:19765
+performUnitOfWork @ chunk-SM3OW2QE.js?v=8729b02a:19198
+workLoopSync @ chunk-SM3OW2QE.js?v=8729b02a:19137
+renderRootSync @ chunk-SM3OW2QE.js?v=8729b02a:19116
+performSyncWorkOnRoot @ chunk-SM3OW2QE.js?v=8729b02a:18874
+flushSyncCallbacks @ chunk-SM3OW2QE.js?v=8729b02a:9119
+(anonymous) @ chunk-SM3OW2QE.js?v=8729b02a:18627Understand this errorAI
+messages.tsx:36 Uncaught ReferenceError: useEffect is not defined
+    at Messages (messages.tsx:36:3)
+    at renderWithHooks (chunk-SM3OW2QE.js?v=8729b02a:11548:26)
+    at mountIndeterminateComponent (chunk-SM3OW2QE.js?v=8729b02a:14926:21)
+    at beginWork (chunk-SM3OW2QE.js?v=8729b02a:15914:22)
+    at HTMLUnknownElement.callCallback2 (chunk-SM3OW2QE.js?v=8729b02a:3674:22)
+    at Object.invokeGuardedCallbackDev (chunk-SM3OW2QE.js?v=8729b02a:3699:24)
+    at invokeGuardedCallback (chunk-SM3OW2QE.js?v=8729b02a:3733:39)
+    at beginWork$1 (chunk-SM3OW2QE.js?v=8729b02a:19765:15)
+    at performUnitOfWork (chunk-SM3OW2QE.js?v=8729b02a:19198:20)
+    at workLoopSync (chunk-SM3OW2QE.js?v=8729b02a:19137:13)
+Messages @ messages.tsx:36
+renderWithHooks @ chunk-SM3OW2QE.js?v=8729b02a:11548
+mountIndeterminateComponent @ chunk-SM3OW2QE.js?v=8729b02a:14926
+beginWork @ chunk-SM3OW2QE.js?v=8729b02a:15914
+callCallback2 @ chunk-SM3OW2QE.js?v=8729b02a:3674
+invokeGuardedCallbackDev @ chunk-SM3OW2QE.js?v=8729b02a:3699
+invokeGuardedCallback @ chunk-SM3OW2QE.js?v=8729b02a:3733
+beginWork$1 @ chunk-SM3OW2QE.js?v=8729b02a:19765
+performUnitOfWork @ chunk-SM3OW2QE.js?v=8729b02a:19198
+workLoopSync @ chunk-SM3OW2QE.js?v=8729b02a:19137
+renderRootSync @ chunk-SM3OW2QE.js?v=8729b02a:19116
+recoverFromConcurrentError @ chunk-SM3OW2QE.js?v=8729b02a:18736
+performSyncWorkOnRoot @ chunk-SM3OW2QE.js?v=8729b02a:18879
+flushSyncCallbacks @ chunk-SM3OW2QE.js?v=8729b02a:9119
+(anonymous) @ chunk-SM3OW2QE.js?v=8729b02a:18627Understand this errorAI
+chunk-SM3OW2QE.js?v=8729b02a:14032 The above error occurred in the <Messages> component:
+
+    at Messages (https://37938e4f-f926-4967-8b1a-3581171687b7-00-bnr0fyueiucy.spock.replit.dev/src/pages/messages.tsx:27:37)
+    at Route (https://37938e4f-f926-4967-8b1a-3581171687b7-00-bnr0fyueiucy.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=8729b02a:323:16)
+    at Switch (https://37938e4f-f926-4967-8b1a-3581171687b7-00-bnr0fyueiucy.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/wouter.js?v=8729b02a:379:17)
+    at Router
+    at main
+    at div
+    at Layout (https://37938e4f-f926-4967-8b1a-3581171687b7-00-bnr0fyueiucy.spock.replit.dev/src/components/layout/layout.tsx:18:34)
+    at OrbisContextProvider (https://37938e4f-f926-4967-8b1a-3581171687b7-00-bnr0fyueiucy.spock.replit.dev/src/lib/orbis.ts:22:40)
+    at App (https://37938e4f-f926-4967-8b1a-3581171687b7-00-bnr0fyueiucy.spock.replit.dev/src/App.tsx?v=ag-ZOLqmFO_RpOBYH2ZtG:88:42)
+    at ApolloProvider (https://37938e4f-f926-4967-8b1a-3581171687b7-00-bnr0fyueiucy.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@apollo_client.js?v=8729b02a:17334:20)
+    at GraphProvider (https://37938e4f-f926-4967-8b1a-3581171687b7-00-bnr0fyueiucy.spock.replit.dev/src/lib/GraphProvider.tsx?v=ag-ZOLqmFO_RpOBYH2ZtG:19:33)
+    at QueryClientProvider (https://37938e4f-f926-4967-8b1a-3581171687b7-00-bnr0fyueiucy.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@tanstack_react-query.js?v=8729b02a:2805:3)
+    at Bo4 (https://37938e4f-f926-4967-8b1a-3581171687b7-00-bnr0fyueiucy.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@privy-io_react-auth.js?v=8729b02a:78693:13)
+    at gp (https://37938e4f-f926-4967-8b1a-3581171687b7-00-bnr0fyueiucy.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@privy-io_react-auth.js?v=8729b02a:80768:23)
+    at ti2 (https://37938e4f-f926-4967-8b1a-3581171687b7-00-bnr0fyueiucy.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@privy-io_react-auth.js?v=8729b02a:77768:24)
+    at wb (https://37938e4f-f926-4967-8b1a-3581171687b7-00-bnr0fyueiucy.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@privy-io_react-auth.js?v=8729b02a:83984:17)
+    at py (https://37938e4f-f926-4967-8b1a-3581171687b7-00-bnr0fyueiucy.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@privy-io_react-auth.js?v=8729b02a:82086:23)
+    at Ro4 (https://37938e4f-f926-4967-8b1a-3581171687b7-00-bnr0fyueiucy.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@privy-io_react-auth.js?v=8729b02a:78655:24)
+    at fb (https://37938e4f-f926-4967-8b1a-3581171687b7-00-bnr0fyueiucy.spock.replit.dev/@fs/home/runner/workspace/node_modules/.vite/deps/@privy-io_react-auth.js?v=8729b02a:83974:21)
+
+Consider adding an error boundary to your tree to customize error handling behavior.
+Visit https://reactjs.org/link/error-boundaries to learn more about error boundaries.
+logCapturedError @ chunk-SM3OW2QE.js?v=8729b02a:14032
+update.callback @ chunk-SM3OW2QE.js?v=8729b02a:14052
+callCallback @ chunk-SM3OW2QE.js?v=8729b02a:11248
+commitUpdateQueue @ chunk-SM3OW2QE.js?v=8729b02a:11265
+commitLayoutEffectOnFiber @ chunk-SM3OW2QE.js?v=8729b02a:17093
+commitLayoutMountEffects_complete @ chunk-SM3OW2QE.js?v=8729b02a:17980
+commitLayoutEffects_begin @ chunk-SM3OW2QE.js?v=8729b02a:17969
+commitLayoutEffects @ chunk-SM3OW2QE.js?v=8729b02a:17920
+commitRootImpl @ chunk-SM3OW2QE.js?v=8729b02a:19353
+commitRoot @ chunk-SM3OW2QE.js?v=8729b02a:19277
+performSyncWorkOnRoot @ chunk-SM3OW2QE.js?v=8729b02a:18895
+flushSyncCallbacks @ chunk-SM3OW2QE.js?v=8729b02a:9119
+(anonymous) @ chunk-SM3OW2QE.js?v=8729b02a:18627Understand this errorAI
+chunk-SM3OW2QE.js?v=8729b02a:9129 Uncaught ReferenceError: useEffect is not defined
+    at Messages (messages.tsx:36:3)
+    at renderWithHooks (chunk-SM3OW2QE.js?v=8729b02a:11548:26)
+    at mountIndeterminateComponent (chunk-SM3OW2QE.js?v=8729b02a:14926:21)
+    at beginWork (chunk-SM3OW2QE.js?v=8729b02a:15914:22)
+    at beginWork$1 (chunk-SM3OW2QE.js?v=8729b02a:19753:22)
+    at performUnitOfWork (chunk-SM3OW2QE.js?v=8729b02a:19198:20)
+    at workLoopSync (chunk-SM3OW2QE.js?v=8729b02a:19137:13)
+    at renderRootSync (chunk-SM3OW2QE.js?v=8729b02a:19116:15)
+    at recoverFromConcurrentError (chunk-SM3OW2QE.js?v=8729b02a:18736:28)
+    at performSyncWorkOnRoot (chunk-SM3OW2QE.js?v=8729b02a:18879:28)
+Messages @ messages.tsx:36
+renderWithHooks @ chunk-SM3OW2QE.js?v=8729b02a:11548
+mountIndeterminateComponent @ chunk-SM3OW2QE.js?v=8729b02a:14926
+beginWork @ chunk-SM3OW2QE.js?v=8729b02a:15914
+beginWork$1 @ chunk-SM3OW2QE.js?v=8729b02a:19753
+performUnitOfWork @ chunk-SM3OW2QE.js?v=8729b02a:19198
+workLoopSync @ chunk-SM3OW2QE.js?v=8729b02a:19137
+renderRootSync @ chunk-SM3OW2QE.js?v=8729b02a:19116
+recoverFromConcurrentError @ chunk-SM3OW2QE.js?v=8729b02a:18736
+performSyncWorkOnRoot @ chunk-SM3OW2QE.js?v=8729b02a:18879
+flushSyncCallbacks @ chunk-SM3OW2QE.js?v=8729b02a:9119
+(anonymous) @ chunk-SM3OW2QE.js?v=8729b02a:18627Understand this errorAI
+websocket.ts:141 WebSocket connection closed (code: 1005, reason: No reason provided)
+websocket.ts:314 Scheduling reconnection attempt in 1000ms (attempt #1)
+websocket.ts:86 Attempting WebSocket connection to: wss://37938e4f-f926-4967-8b1a-3581171687b7-00-bnr0fyueiucy.spock.replit.dev/ws
+websocket.ts:102 WebSocket object created, waiting for connection...
+websocket.ts:120 WebSocket connection established successfully
+2websocket.ts:222 WebSocket authenticated for user: did:privy:cm97oarmz0159i80l1lvnvh5k
