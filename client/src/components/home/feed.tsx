@@ -22,29 +22,32 @@ export default function Feed() {
   const { totalPoints, loading: totalPointsLoading } = useTotalPoints();
 
   useEffect(() => {
-    const fetchPosts = async () => {
+    const fetchPosts = async (retryCount = 0) => {
       setIsLoading(true);
       try {
         // Get posts without a specific context to get all posts
         const fetchedPosts = await getPosts();
-        
+
         if (isAuthenticated && user) {
           // Get user votes for the fetched posts
           const postIds = fetchedPosts.map(post => post.id);
           const userVotes = await getUserVotes(postIds);
-          
+
           // Merge user votes with posts
           const postsWithVotes = fetchedPosts.map(post => ({
             ...post,
             userVote: userVotes[post.id] === 'upvote' ? 'up' : userVotes[post.id] === 'downvote' ? 'down' : null
           }));
-          
+
           setPosts(postsWithVotes);
         } else {
           setPosts(fetchedPosts);
         }
       } catch (error) {
-        console.error('Error fetching posts:', error);
+        console.error('Failed to fetch posts:', error);
+        if (retryCount < 2) { // Retry up to 2 times
+          setTimeout(() => fetchPosts(retryCount + 1), 2000); // Wait 2 seconds before retry
+        }
       } finally {
         setIsLoading(false);
       }
@@ -55,7 +58,7 @@ export default function Feed() {
 
   const handleFilterChange = (filter: 'hot' | 'new' | 'top') => {
     setActiveFilter(filter);
-    
+
     let filteredPosts = [...posts];
     if (filter === 'new') {
       filteredPosts.sort((a, b) => b.createdAt - a.createdAt);
@@ -68,12 +71,12 @@ export default function Feed() {
         const bScore = b.upvotes - b.downvotes;
         const aAge = (Date.now() - a.createdAt) / 3600000; // hours
         const bAge = (Date.now() - b.createdAt) / 3600000; // hours
-        
+
         // Simple hot algorithm: score / (age + 2)^1.8
         return (bScore / Math.pow(bAge + 2, 1.8)) - (aScore / Math.pow(aAge + 2, 1.8));
       });
     }
-    
+
     setPosts(filteredPosts);
   };
 
@@ -110,7 +113,7 @@ export default function Feed() {
           </Button>
         </div>
       )}
-      
+
       {/* Floating Create Post Button - Visible only on Mobile */}
       {isMobile && (
         <button 
@@ -150,7 +153,7 @@ export default function Feed() {
             <span>Top</span>
           </Button>
         </div>
-        
+
         {/* Total Points Badge */}
         {!totalPointsLoading && (
           <div className="flex items-center ml-auto">
